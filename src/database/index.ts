@@ -31,3 +31,5 @@ export const dbDisconnect = () => {
     Mongoose.disconnect();
     logger.info("Database disconnect");
 }
+
+export { UserModel } from "./users/users.models";
