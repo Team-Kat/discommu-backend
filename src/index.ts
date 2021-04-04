@@ -8,6 +8,8 @@ import config from "../config.json";
 
 import logger from "./utils/logger";
 
+import Log from "./middlewares/Log";
+
 import DefaultResolver from "./resolvers/DefaultResolver";
 
 process.on("exit", () => {
@@ -18,6 +20,9 @@ process.on("exit", () => {
     const schema = await buildSchema({
         resolvers: [
             DefaultResolver
+        ],
+        globalMiddlewares: [
+            Log
         ]
     });
 
