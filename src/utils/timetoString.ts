@@ -1,4 +1,4 @@
-const timetoString = stamp => 
+const timetoString = (stamp: number) => 
     new Date(stamp)
         .toLocaleString(undefined, {
             year: "numeric",
