@@ -1,11 +1,29 @@
-[
-    "ADD_CATEGORY",
-    "REMOVE_CATEGORY",
-    "REMOVE_POST",
-    "REMOVE_COMMENT",
-    "BAN_USER",
-    "WATCH_STATS",
-    "ADD_BADGE",
-    "REMOVE_BADGE",
-    "MODIFY_POINTS"
-]
+{
+    "ADD_CATEGORY": {
+        "need": 100
+    },
+    "REMOVE_CATEGORY": {
+        "need": null
+    },
+    "REMOVE_POST": {
+        "need": null
+    },
+    "REMOVE_COMMENT": {
+        "need": null
+    },
+    "BAN_USER": {
+        "need": null
+    },
+    "WATCH_STATS": {
+        "need": null
+    },
+    "ADD_BADGE": {
+        "need": null
+    },
+    "REMOVE_BADGE": {
+        "need": null
+    },
+    "MODIFY_POINTS": {
+        "need": null
+    }
+}
