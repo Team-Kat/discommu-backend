@@ -1,0 +1,11 @@
+[
+    "ADD_CATEGORY",
+    "REMOVE_CATEGORY",
+    "REMOVE_POST",
+    "REMOVE_COMMENT",
+    "BAN_USER",
+    "WATCH_STATS",
+    "ADD_BADGE",
+    "REMOVE_BADGE",
+    "MODIFY_POINTS"
+]
