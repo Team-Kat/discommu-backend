@@ -1,7 +1,7 @@
 import { Schema } from "mongoose";
 
 import { findOneOrCreate } from "./users.statics";
-import { addFollowing, removeFollowing, addPermissions, removePermissions } from "./users.methods";
+import { follow, unfollow, addPermissions, removePermissions, addBadge, removeBadge, addPoint } from "./users.methods";
 import { IUserDocument, IUserModel } from "./users.types";
 
 const UserSchema = new Schema<IUserDocument, IUserModel>({
@@ -17,14 +17,21 @@ const UserSchema = new Schema<IUserDocument, IUserModel>({
     following: {
         type: Array,
         default: []
+    },
+    badges: {
+        type: Array,
+        default: []
     }
 });
 
 UserSchema.statics.findOneOrCreate = findOneOrCreate;
 
-UserSchema.methods.addFollowing = addFollowing;
-UserSchema.methods.removeFollowing = removeFollowing;
+UserSchema.methods.follow = follow;
+UserSchema.methods.unfollow = unfollow;
 UserSchema.methods.addPermissions = addPermissions;
 UserSchema.methods.removePermissions = removePermissions;
+UserSchema.methods.addPoint = addPoint;
+UserSchema.methods.addBadge = addBadge;
+UserSchema.methods.removeBadge = removeBadge;
 
 export default UserSchema;
