@@ -25,5 +25,11 @@
     },
     "MODIFY_POINTS": {
         "need": null
+    },
+    "VERTIFY": {
+        "need": null
+    },
+    "UNVERTIFY": {
+        "need": null
     }
 }
