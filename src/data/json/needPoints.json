@@ -1,0 +1,8 @@
+{
+    "newPost": 0,
+    "newComment": 10,
+    "follow": 30,
+    "seeStatics": 50,
+    "newWebhook": 100,
+    "newCategory": 200
+}
