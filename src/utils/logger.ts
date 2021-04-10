@@ -19,7 +19,7 @@ class Logger {
         WHITE: "\x1b[37m"
     }
 
-    constructor (logFile: string) {
+    constructor(logFile: string) {
         this.logFile = logFile;
     }
 
@@ -28,7 +28,7 @@ class Logger {
     }
 
     async fileLog(level: string, content: string, callback?) {
-        await appendFile(this.logFile, `${this.formatLog(level, content)} (${timetoString(Date.now())})\n`, callback || (() => null));
+        await appendFile(this.logFile, `${this.formatLog(level, content)} (${timetoString(Date.now())})\n`, callback ?? (() => null));
     }
 
     async log(level: string, content: string, color?: string) {

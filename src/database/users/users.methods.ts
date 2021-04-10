@@ -10,7 +10,7 @@ export async function follow(this: IUserDocument, userID: string, noSave?: boole
     if (this.following?.includes(userID)) return;
     this.following?.push(userID);
 
-    this.addPoint(getPoints.follow, false);
+    await this.addPoint(getPoints.follow, false);
     if (!noSave)
         await this.save();
 }
@@ -20,7 +20,7 @@ export async function unfollow(this: IUserDocument, userID: string, noSave?: boo
     if (!this.following?.includes(userID)) return;
     this.following = this.following?.filter(i => i !== userID);
 
-    this.addPoint(getPoints.follow, false);
+    await this.addPoint(getPoints.follow, false);
     if (!noSave)
         await this.save();
 }
@@ -28,7 +28,7 @@ export async function unfollow(this: IUserDocument, userID: string, noSave?: boo
 export async function addPermissions(this: IUserDocument, permission: string, noSave?: boolean): Promise<void> {
     if ((!permissions[permission]) || (this.permissions?.includes(permission))) return;
     this.permissions?.push(permission);
-    
+
     if (!noSave)
         await this.save();
 }
@@ -36,7 +36,7 @@ export async function addPermissions(this: IUserDocument, permission: string, no
 export async function removePermissions(this: IUserDocument, permission: string, noSave?: boolean): Promise<void> {
     if ((!permissions[permission]) || (!this.permissions?.includes(permission))) return;
     this.permissions = this.permissions?.filter(i => i !== permission);
-    
+
     if (!noSave)
         await this.save();
 }
@@ -44,10 +44,10 @@ export async function removePermissions(this: IUserDocument, permission: string,
 export async function addPoint(this: IUserDocument, point: number, noSave?: boolean): Promise<void> {
     if (!point || point <= 0) return;
     this.point += point;
-    Object.keys(permissions).forEach(permissionKey => {
+    Object.keys(permissions).forEach(async permissionKey => {
         const per = permissions[permissionKey];
         if (!per.need) return;
-        this.addPermissions(permissionKey, true);
+        await this.addPermissions(permissionKey, true);
     })
 
     if (!noSave)
@@ -59,10 +59,10 @@ export async function addBadge(this: IUserDocument, badge: string, noSave?: bool
     const badgeInfo = badges[badge];
     this.badges?.push(badge);
     this.addPoint(badgeInfo.point, true);
-    badgeInfo.permissions.forEach(per => {
-        this.addPermissions(per, true)
+    badgeInfo.permissions.forEach(async per => {
+        await this.addPermissions(per, true)
     })
-    
+
     if (!noSave)
         await this.save();
 }
@@ -70,7 +70,7 @@ export async function addBadge(this: IUserDocument, badge: string, noSave?: bool
 export async function removeBadge(this: IUserDocument, badge: string, noSave?: boolean): Promise<void> {
     if ((!badges[badge]) || (!this.badges?.includes(badge))) return;
     this.badges = this.badges?.filter(i => i !== badge);
-    
+
     if (!noSave)
         await this.save();
 }
