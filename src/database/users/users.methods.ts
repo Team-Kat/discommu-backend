@@ -74,3 +74,11 @@ export async function removeBadge(this: IUserDocument, badge: string, noSave?: b
     if (!noSave)
         await this.save();
 }
+
+export async function editDesc(this: IUserDocument, description: string, noSave?: boolean): Promise<string> {
+    this.description = description;
+
+    if (!noSave)
+        await this.save();
+    return description;
+}
