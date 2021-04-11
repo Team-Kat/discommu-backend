@@ -15,10 +15,10 @@ export async function verify(this: ICategoryDocument): Promise<boolean> {
 }
 
 export async function del(this: ICategoryDocument): Promise<boolean> {
-    const posts = (await PostModel.find({ category: this.name }))
-        .length;
-    if (posts >= 10)
+    const posts = await PostModel.find({ category: this.name });
+    if (posts.length >= 10)
         return false;
     await this.delete();
+    await posts.forEach(async post => await post.delete())
     return true;
 }
