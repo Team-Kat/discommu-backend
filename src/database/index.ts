@@ -34,3 +34,4 @@ export const dbDisconnect = () => {
 
 export { UserModel } from "./users/users.models";
 export { PostModel } from "./posts/posts.models";
+export { CategoryModel } from "./categories/categories.models";
