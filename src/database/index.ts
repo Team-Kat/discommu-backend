@@ -37,3 +37,4 @@ export { PostModel } from "./posts/posts.models";
 export { CategoryModel } from "./categories/categories.models";
 export { CommentModel } from "./comments/comments.models";
 export { AnnouncementModel } from "./announcements/announcements.models";
+export { ReportModel } from "./reports/reports.models";
