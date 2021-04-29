@@ -15,6 +15,7 @@ import { userCache } from "./utils/cache";
 import Log from "./middlewares/Log";
 
 import DefaultResolver from "./resolvers/DefaultResolver";
+import MutationResolver from "./resolvers/MutationResolver";
 
 import TContext from "./types/context";
 
@@ -26,7 +27,8 @@ process.on("exit", () => {
 (async () => {
     const schema = await buildSchema({
         resolvers: [
-            DefaultResolver
+            DefaultResolver,
+            MutationResolver
         ],
         globalMiddlewares: [
             Log
@@ -36,23 +38,27 @@ process.on("exit", () => {
     const apollo = new ApolloServer({
         schema,
         logger,
+        formatError: error => {
+            logger.error(`[${error.extensions.code}] ${error.message}  (Path: ${error.path}, Original: ${error.originalError.stack})`)
+            return error
+        },
         context: async ({ req }): Promise<TContext> => {
-            if (!req.headers.authorization) return null;
-            if (!req.headers.authorization.startsWith("Bearer ")) return null;
-            const token = req.headers.authorization.slice("Bearer ".length);
+            let token = null;
+
+            if (req.headers.authorization && req.headers.authorization.startsWith("Bearer "))
+                token = req.headers.authorization.slice("Bearer ".length);
 
             const uCache = new userCache();
-            let user;
+            let user = null;
 
-            try { user = await uCache.getUser((verify(token, config.jwtSecret) as any).id) }
-            catch { user = null }
-
-            if (!user)
-                user = null;
+            if (token) {
+                try { user = await uCache.getUser((verify(token, config.jwtSecret) as any).id) }
+                catch { user = null }
+            }
 
             return {
                 userCache: uCache,
-                user: user
+                user: user || null
             }
         }
     });
