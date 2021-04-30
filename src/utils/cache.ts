@@ -3,7 +3,7 @@ import config from "../../config.json";
 import safeFetch from "./fetch";
 
 export class cacheManager {
-    cache: { [key: string]: object }
+    cache: { [key: string]: object } = {}
 
     get(key: string) {
         return this.cache[key] || null;
@@ -52,15 +52,6 @@ export class userCache extends cacheManager {
     async getUser(id: string) {
         if (!this.get(id)) await this.getDiscordUser(id);
         const userDBInfo = await UserModel.findOne({ discordID: id });
-        console.log({
-            id: id,
-            description: userDBInfo.description,
-            point: userDBInfo.point,
-            permissions: userDBInfo.permissions,
-            following: userDBInfo.following,
-            badges: userDBInfo.badges,
-            ...this.get(id)
-        })
 
         if (!userDBInfo) return null;
         return {
