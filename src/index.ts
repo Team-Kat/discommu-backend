@@ -16,6 +16,7 @@ import Log from "./middlewares/Log";
 
 import DefaultResolver from "./resolvers/DefaultResolver";
 import MutationResolver from "./resolvers/MutationResolver";
+import UserResolver from "./resolvers/UserResolver";
 
 import TContext from "./types/context";
 
@@ -28,7 +29,8 @@ process.on("exit", () => {
     const schema = await buildSchema({
         resolvers: [
             DefaultResolver,
-            MutationResolver
+            MutationResolver,
+            UserResolver
         ],
         globalMiddlewares: [
             Log

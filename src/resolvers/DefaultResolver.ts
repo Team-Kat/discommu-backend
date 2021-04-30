@@ -1,4 +1,6 @@
-import { Resolver, Query } from "type-graphql";
+import { Resolver, Query, Ctx } from "type-graphql";
+
+import { GraphQLTUser } from "../types/graphql/User";
 
 import config from "../../config.json";
 
@@ -9,5 +11,13 @@ export default class DefaultResolver {
         return (
             `${config.discordAPIEndpoint}/oauth2/authorize?client_id=${config.oauth2.clientID}&redirect_uri=${config.oauth2.redirectURI}&scope=identify&response_type=code`
         )
+    }
+
+    @Query(returns => GraphQLTUser, { nullable: true })
+    me(@Ctx() ctx) {
+        if (!ctx.user)
+            return null;
+
+        return ctx.user;
     }
 }

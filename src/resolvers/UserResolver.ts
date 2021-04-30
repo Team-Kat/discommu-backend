@@ -45,11 +45,12 @@ export default class {
     @FieldResolver()
     async following(@Root() root: TUser, @Ctx() ctx: TContext) {
         let res = [];
-        await root.following.forEach(async userID => {
+        for (const userID of root.following) {
             const user = await ctx.userCache.getUser(userID);
             if (user)
                 res.push(user);
-        })
+        }
+
         return res;
     }
 
@@ -58,13 +59,13 @@ export default class {
         const users = await UserModel.find({});
         let res = [];
 
-        await users.forEach(async dbUser => {
+        for (const dbUser of users) {
             if (dbUser.following.includes(root.discordID)) {
                 const user = await dbUser.getUser(ctx.userCache);
                 if (user)
                     res.push(user);
             }
-        })
+        }
 
         return res;
     }

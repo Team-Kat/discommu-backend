@@ -5,7 +5,7 @@ import TUser from "../user";
 @ObjectType()
 export class GraphQLTUser {
     @Field(type => ID)
-    id: string;
+    discordID: string;
 
     @Field()
     discriminator: string;
