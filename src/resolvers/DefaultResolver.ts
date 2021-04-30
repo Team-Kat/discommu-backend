@@ -3,6 +3,8 @@ import { Resolver, Query, Ctx, Arg } from "type-graphql";
 import TContext from "../types/context";
 import { GraphQLTUser } from "../types/graphql/User";
 
+import { UserModel } from "../database";
+
 import config from "../../config.json";
 
 @Resolver()
@@ -29,5 +31,19 @@ export default class DefaultResolver {
             return null;
 
         return user;
+    }
+
+    @Query(returns => [GraphQLTUser])
+    async users(@Ctx() ctx: TContext) {
+        const users = await UserModel.find({});
+        let res = [];
+
+        for (const dbUser of users) {
+            const user = await dbUser.getUser(ctx.userCache);
+            if (user)
+                res.push(user)
+        }
+
+        return res;
     }
 }
