@@ -1,5 +1,6 @@
-import { Resolver, Query, Ctx } from "type-graphql";
+import { Resolver, Query, Ctx, Arg } from "type-graphql";
 
+import TContext from "../types/context";
 import { GraphQLTUser } from "../types/graphql/User";
 
 import config from "../../config.json";
@@ -14,10 +15,19 @@ export default class DefaultResolver {
     }
 
     @Query(returns => GraphQLTUser, { nullable: true })
-    me(@Ctx() ctx) {
+    me(@Ctx() ctx: TContext) {
         if (!ctx.user)
             return null;
 
         return ctx.user;
+    }
+
+    @Query(returns => GraphQLTUser, { nullable: true })
+    async user(@Ctx() ctx: TContext, @Arg("id") id: string) {
+        const user = await ctx.userCache.getUser(id);
+        if (!user)
+            return null;
+
+        return user;
     }
 }
