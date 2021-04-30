@@ -1,5 +1,8 @@
 import { Document, Model } from "mongoose";
 
+import TUser from "../../types/user";
+import { userCache } from "../../utils/cache";
+
 export interface IUser {
     discordID: string;
     description?: string;
@@ -18,6 +21,7 @@ export interface IUserDocument extends Document, IUser {
     addBadge: (this: IUserDocument, badge: string, noSave?: boolean) => Promise<void>;
     removeBadge: (this: IUserDocument, badge: string, noSave?: boolean) => Promise<void>;
     editDesc: (this: IUserDocument, description: string, noSave?: boolean) => Promise<string>;
+    getUser: (this: IUserDocument, userCache: userCache) => Promise<TUser>;
 };
 
 export interface IUserModel extends Model<IUserDocument> {

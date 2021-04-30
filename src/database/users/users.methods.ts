@@ -5,6 +5,9 @@ import badges from "../../data/json/badges.json";
 import needPoints from "../../data/json/needPoints.json";
 import getPoints from "../../data/json/getPoints.json";
 
+import TUser from "../../types/user";
+import { userCache } from "../../utils/cache";
+
 export async function follow(this: IUserDocument, userID: string, noSave?: boolean): Promise<void> {
     if (needPoints.follow > this.point) return;
     if (this.following?.includes(userID)) return;
@@ -81,4 +84,8 @@ export async function editDesc(this: IUserDocument, description: string, noSave?
     if (!noSave)
         await this.save();
     return description;
+}
+
+export async function getUser(this: IUserDocument, userCache: userCache): Promise<TUser> {
+    return (await userCache.getUser(this.discordID) as TUser);
 }

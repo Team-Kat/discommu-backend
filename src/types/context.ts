@@ -1,4 +1,4 @@
-import { TUser } from "./user";
+import TUser from "./user";
 import { userCache } from "../utils/cache"
 
 type TContext = {

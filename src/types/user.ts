@@ -1,4 +1,4 @@
-export type TUser = {
+type TUser = {
     discordID: string,
     username: string,
     discriminator: number,
@@ -9,3 +9,4 @@ export type TUser = {
     permissions: string[],
     badges: string[]
 }
+export default TUser;

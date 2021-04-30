@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from "type-graphql";
 
-import { TUser } from "../user";
+import TUser from "../user";
 
 @ObjectType()
 export class GraphQLTUser {
