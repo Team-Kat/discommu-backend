@@ -1,8 +1,11 @@
 export type TUser = {
-    id: string,
+    discordID: string,
     username: string,
     discriminator: number,
     avatarURL: string,
-    following: TUser[],
-    permissions: string[]
+    description: string,
+    point: number,
+    following: string[],
+    permissions: string[],
+    badges: string[]
 }

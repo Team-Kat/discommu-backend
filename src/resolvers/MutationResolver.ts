@@ -13,7 +13,7 @@ export default class MutationResolver {
     @Mutation(returns => String, { nullable: true })
     async login(@Ctx() ctx: TContext, @Arg("code") code: string) {
         if (ctx.user)
-            throw new ApolloError('Already logged in! (token is valid)', 'TOKEN_VALID');
+            throw new ApolloError("Already logged in! (token is valid)", "TOKEN_VALID");
 
         const loginRes = await safeFetch(`${config.discordAPIEndpoint}/oauth2/token`, {
             body: new URLSearchParams({
@@ -32,7 +32,7 @@ export default class MutationResolver {
         const loginJSON = await loginRes.json();
 
         if ((loginRes.status !== 200) || !loginJSON.access_token)
-            throw new ApolloError('Wrong code', 'CODE_INVALID');
+            throw new ApolloError("Wrong code", "CODE_INVALID");
 
         const userRes = await safeFetch(
             `${config.discordAPIEndpoint}/users/@me`,
@@ -45,7 +45,7 @@ export default class MutationResolver {
         const userJSON = await userRes.json();
 
         if (userRes.status !== 200)
-            throw new ApolloError('User Not Found', 'REQUEST_ERROR');
+            throw new ApolloError("User Not Found", "REQUEST_ERROR");
 
         await UserModel.findOneOrCreate({ discordID: userJSON.id });
         const data = {
@@ -56,6 +56,6 @@ export default class MutationResolver {
             discriminator: userJSON.discriminator
         };
         ctx.userCache.set(userJSON.id, data);
-        return sign({ id: userJSON.id, ...data }, config.jwtSecret, { expiresIn: '6h' });
+        return sign({ id: userJSON.id, ...data }, config.jwtSecret, { expiresIn: "6h" });
     }
 }

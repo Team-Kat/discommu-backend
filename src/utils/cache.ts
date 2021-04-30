@@ -55,7 +55,7 @@ export class userCache extends cacheManager {
 
         if (!userDBInfo) return null;
         return {
-            id: id,
+            discordID: id,
             description: userDBInfo.description,
             point: userDBInfo.point,
             permissions: userDBInfo.permissions,
