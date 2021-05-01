@@ -8,41 +8,55 @@ import GraphQLTUser from "../types/graphql/User";
 
 import EditUser from "../inputs/EditUser";
 
+import badges from "../data/json/badges.json";
+
 @Resolver(GraphQLTUser)
 export default class {
     @FieldResolver()
     async discordID(@Root() root: TUser) {
-        return root.discordID
+        return root.discordID;
     }
 
     @FieldResolver()
     async username(@Root() root: TUser) {
-        return root.username
+        return root.username;
     }
 
     @FieldResolver()
     async discriminator(@Root() root: TUser) {
-        return root.discriminator
+        return root.discriminator;
     }
 
     @FieldResolver()
     async avatarURL(@Root() root: TUser) {
-        return root.avatarURL
+        return root.avatarURL;
     }
 
     @FieldResolver()
     async point(@Root() root: TUser) {
-        return root.point
+        return root.point;
     }
 
     @FieldResolver()
     async permissions(@Root() root: TUser) {
-        return root.permissions
+        return root.permissions;
     }
 
     @FieldResolver()
     async badges(@Root() root: TUser) {
-        return root.badges
+        let res = [];
+
+        for (const badge of root.badges) {
+            if (!badges[badge])
+                continue;
+
+            res.push({
+                "name": badge,
+                ...badges[badge]
+            })
+        }
+
+        return res;
     }
 
     @FieldResolver()

@@ -1,6 +1,7 @@
 import { Field, ID, ObjectType } from "type-graphql";
 
 import TUser from "../user";
+import GraphQLTBadge from "./Badge";
 
 @ObjectType()
 class GraphQLTUser {
@@ -25,8 +26,8 @@ class GraphQLTUser {
     @Field(type => [String])
     permissions: string[];
 
-    @Field(type => [String])
-    badges: string[];
+    @Field(type => [GraphQLTBadge])
+    badges: GraphQLTBadge[];
 
     @Field(type => [GraphQLTUser])
     following: TUser[];
