@@ -2,18 +2,12 @@ import { UserModel } from "../index";
 
 import { IPostDocument } from "./posts.types";
 
-import needPoints from "../../data/json/needPoints.json";
-import getPoints from "../../data/json/getPoints.json";
-
 
 export async function addHeart(this: IPostDocument, userID: string): Promise<void> {
     if (this.hearts?.includes(userID)) return;
     const user = await UserModel.findOne({ id: userID });
 
-    if (needPoints.addHeart > user.point) return;
     this.hearts?.push(userID);
-
-    await user.addPoint(getPoints.addHeart);
     await this.save();
 }
 
@@ -21,7 +15,6 @@ export async function removeHeart(this: IPostDocument, userID: string): Promise<
     if (!this.hearts?.includes(userID)) return;
     const user = await UserModel.findOne({ id: userID });
 
-    if (needPoints.addHeart > user.point) return;
     this.hearts = this.hearts?.filter(i => i !== userID);
 
     await this.save();

@@ -8,9 +8,6 @@ class GraphQLTBadge {
     @Field()
     icon: string;
 
-    @Field()
-    point: number;
-
     @Field(type => [String])
     permissions: string[];
 }

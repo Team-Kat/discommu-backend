@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-import Express from "express";
+import Express, { static as ExpressStatic } from "express";
 import { buildSchema } from "type-graphql";
 import { ApolloServer } from "apollo-server-express";
 import { verify } from "jsonwebtoken";
@@ -18,6 +18,7 @@ import DiscommuAuthChecker from "./middlewares/Authorization";
 import DefaultResolver from "./resolvers/DefaultResolver";
 import MutationResolver from "./resolvers/MutationResolver";
 import UserResolver from "./resolvers/UserResolver";
+import BadgeResolver from "./resolvers/BadgeResolver";
 
 import TContext from "./types/context";
 
@@ -31,7 +32,8 @@ process.on("exit", () => {
         resolvers: [
             DefaultResolver,
             MutationResolver,
-            UserResolver
+            UserResolver,
+            BadgeResolver
         ],
         globalMiddlewares: [
             Log
@@ -62,12 +64,14 @@ process.on("exit", () => {
 
             return {
                 userCache: uCache,
-                user: user || null
+                user: user || null,
+                url: req.protocol + "://" + req.get("host")
             }
         }
     });
 
     const app: Express.Application = Express();
+    app.use('/static', ExpressStatic('src/data'));
     apollo.applyMiddleware({ app });
 
     app.listen(config.port || 3000);

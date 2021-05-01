@@ -1,7 +1,6 @@
 {
     "developer": {
         "icon": "images/developer.png",
-        "point": 1000,
         "permissions": [
             "ADD_CATEGORY",
             "REMOVE_CATEGORY",
@@ -18,7 +17,6 @@
     },
     "admin": {
         "icon": "images/administer.png",
-        "point": 1000,
         "permissions": [
             "ADD_CATEGORY",
             "REMOVE_CATEGORY",
@@ -35,7 +33,6 @@
     },
     "cleaner": {
         "icon": "images/cleaner.png",
-        "point": 500,
         "permissions": [
             "REMOVE_POST",
             "REMOVE_COMMENT",

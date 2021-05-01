@@ -10,6 +10,8 @@ import GraphQLTUser from "../types/graphql/User";
 import { UserModel } from "../database";
 
 import config from "../../config.json";
+import badges from "../data/json/badges.json";
+import GraphQLTBadge from "../types/graphql/Badge";
 
 @Resolver()
 export default class DefaultResolver {
@@ -58,5 +60,16 @@ export default class DefaultResolver {
         }
 
         return res;
+    }
+
+    @Query(returns => GraphQLTBadge, { nullable: true })
+    async badge(@Arg("name") name: string) {
+        if (!badges[name])
+            return null;
+
+        return {
+            "name": name,
+            ...badges[name]
+        }
     }
 }
