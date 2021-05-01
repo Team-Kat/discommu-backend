@@ -1,4 +1,4 @@
-import { Ctx, FieldResolver, Resolver, Root } from "type-graphql";
+import { Ctx, FieldResolver, Resolver, Root, Mutation } from "type-graphql";
 import { GraphQLTUser } from "../types/graphql/User";
 
 import TUser from "../types/user";
@@ -69,4 +69,7 @@ export default class {
 
         return res;
     }
+    /*
+        @Mutation(returns => String)
+        async edit(@Ctx() ctx: TContext)*/
 }

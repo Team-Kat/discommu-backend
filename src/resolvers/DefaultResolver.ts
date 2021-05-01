@@ -1,4 +1,4 @@
-import { Resolver, Query, Ctx, Arg, Info } from "type-graphql";
+import { Resolver, Query, Ctx, Arg, Info, Authorized } from "type-graphql";
 import { GraphQLResolveInfo } from "graphql";
 
 import graphqlFields from "graphql-fields";
@@ -20,11 +20,9 @@ export default class DefaultResolver {
         )
     }
 
+    @Authorized()
     @Query(returns => GraphQLTUser, { nullable: true })
     me(@Ctx() ctx: TContext) {
-        if (!ctx.user)
-            return null;
-
         return ctx.user;
     }
 

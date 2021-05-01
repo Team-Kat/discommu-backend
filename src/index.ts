@@ -13,6 +13,7 @@ import logger from "./utils/logger";
 import { userCache } from "./utils/cache";
 
 import Log from "./middlewares/Log";
+import { DiscommuAuthChecker } from "./middlewares/Authorization";
 
 import DefaultResolver from "./resolvers/DefaultResolver";
 import MutationResolver from "./resolvers/MutationResolver";
@@ -34,7 +35,8 @@ process.on("exit", () => {
         ],
         globalMiddlewares: [
             Log
-        ]
+        ],
+        authChecker: DiscommuAuthChecker,
     });
 
     const apollo = new ApolloServer({
