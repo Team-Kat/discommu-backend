@@ -12,7 +12,7 @@ export const dbConnect = () => {
 
     Mongoose.connect(`mongodb+srv://admin:${config.db.password}@${config.db.url}/discommu?retryWrites=true&w=majority`, {
         useNewUrlParser: true,
-        useFindAndModify: true,
+        useFindAndModify: false,
         useUnifiedTopology: true,
         useCreateIndex: true
     });

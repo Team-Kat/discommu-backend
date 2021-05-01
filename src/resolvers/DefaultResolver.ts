@@ -5,7 +5,7 @@ import graphqlFields from "graphql-fields";
 import { ApolloError } from "apollo-server-errors";
 
 import TContext from "../types/context";
-import { GraphQLTUser } from "../types/graphql/User";
+import GraphQLTUser from "../types/graphql/User";
 
 import { UserModel } from "../database";
 

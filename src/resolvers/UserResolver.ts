@@ -1,9 +1,12 @@
-import { Ctx, FieldResolver, Resolver, Root, Mutation } from "type-graphql";
-import { GraphQLTUser } from "../types/graphql/User";
+import { Ctx, FieldResolver, Resolver, Root, Mutation, Arg, Authorized } from "type-graphql";
+import { ApolloError } from "apollo-server-errors";
+import { UserModel } from "../database";
 
 import TUser from "../types/user";
 import TContext from "../types/context";
-import { UserModel } from "../database";
+import GraphQLTUser from "../types/graphql/User";
+
+import EditUser from "../inputs/EditUser";
 
 @Resolver(GraphQLTUser)
 export default class {
@@ -69,7 +72,21 @@ export default class {
 
         return res;
     }
-    /*
-        @Mutation(returns => String)
-        async edit(@Ctx() ctx: TContext)*/
+
+    @Authorized()
+    @Mutation(returns => GraphQLTUser, { nullable: true })
+    async editUser(@Ctx() ctx: TContext, @Arg("id") userID: string, @Arg("data") data: EditUser) {
+        if ((userID !== ctx.user.discordID) && !ctx.user.permissions.includes("admin"))
+            throw new ApolloError("You can only edit your info", "NO_PERMISSION")
+
+        if ((data.permissions || data.badges) && !ctx.user.permissions.includes("admin"))
+            throw new ApolloError("To edit permissions, you need the administer permission", "NO_PERMISSION");
+
+        return await ctx.userCache.getUser(
+            (await UserModel.findOneAndUpdate(
+                { discordID: userID },
+                { ...data },
+                { new: true })).discordID
+        );
+    }
 }

@@ -3,7 +3,7 @@ import { Field, ID, ObjectType } from "type-graphql";
 import TUser from "../user";
 
 @ObjectType()
-export class GraphQLTUser {
+class GraphQLTUser {
     @Field(type => ID)
     discordID: string;
 
@@ -34,3 +34,4 @@ export class GraphQLTUser {
     @Field(type => [GraphQLTUser])
     follower: TUser[]
 }
+export default GraphQLTUser;

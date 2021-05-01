@@ -2,7 +2,7 @@ import { AuthChecker } from "type-graphql";
 
 import TContext from "../types/context";
 
-export const DiscommuAuthChecker: AuthChecker<TContext> = ({ context }, roles: string[]) => {
+const DiscommuAuthChecker: AuthChecker<TContext> = ({ context }, roles: string[]) => {
     if (!context.user)
         return false;
 
@@ -20,3 +20,4 @@ export const DiscommuAuthChecker: AuthChecker<TContext> = ({ context }, roles: s
     }
     return res;
 }
+export default DiscommuAuthChecker;
