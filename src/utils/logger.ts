@@ -6,7 +6,8 @@ import config from "../../config.json";
 
 
 class Logger {
-    logFile: string
+    logFile: string;
+    level: number;
     colorData = {
         RESET: "\x1b[0m",
         BLACK: "\x1b[30m",
@@ -18,9 +19,19 @@ class Logger {
         CYAN: "\x1b[36m",
         WHITE: "\x1b[37m"
     }
+    levelNumber = {
+        DEBUG: 1,
+        WARNING: 2,
+        INFO: 3,
+    }
 
     constructor(logFile: string) {
         this.logFile = logFile;
+        this.setLevel("DEBUG");
+    }
+
+    setLevel(level: string) {
+        this.level = this.levelNumber[level];
     }
 
     formatLog(level: string, content: string, color?: string) {
@@ -32,8 +43,10 @@ class Logger {
     }
 
     async log(level: string, content: string, color?: string) {
-        console.log(this.formatLog(level, content, color));
-        await this.fileLog(level, content);
+        if (this.levelNumber[level.toUpperCase()] >= this.level) {
+            console.log(this.formatLog(level, content, color));
+            await this.fileLog(level, content);
+        }
     }
 
     async info(content: string) {
