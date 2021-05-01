@@ -30,7 +30,7 @@ class Logger {
         this.setLevel("DEBUG");
     }
 
-    setLevel(level: string) {
+    setLevel(level: "DEBUG" | "WARNING" | "INFO") {
         this.level = this.levelNumber[level];
     }
 
