@@ -8,11 +8,10 @@
             "REMOVE_COMMENT",
             "BAN_USER",
             "WATCH_STATS",
-            "ADD_BADGE",
-            "REMOVE_BADGE",
+            "MODIFY_BADGE",
             "MODIFY_POINTS",
-            "VERTIFY",
-            "UNVERTIFY"
+            "VERIFY",
+            "UNVERIFY"
         ]
     },
     "admin": {
@@ -24,11 +23,10 @@
             "REMOVE_COMMENT",
             "BAN_USER",
             "WATCH_STATS",
-            "ADD_BADGE",
-            "REMOVE_BADGE",
+            "MODIFY_BADGE",
             "MODIFY_POINTS",
-            "VERTIFY",
-            "UNVERTIFY"
+            "VERIFY",
+            "UNVERIFY"
         ]
     },
     "cleaner": {

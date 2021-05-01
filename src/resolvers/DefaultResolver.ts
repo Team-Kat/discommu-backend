@@ -72,4 +72,21 @@ export default class DefaultResolver {
             ...badges[name]
         }
     }
+
+    @Query(returns => [GraphQLTBadge])
+    async badges() {
+        let res = [];
+
+        for (const badge of Object.keys(badges)) {
+            if (!badges[badge])
+                continue
+
+            res.push({
+                "name": badge,
+                ...badges[badge]
+            })
+        }
+
+        return res;
+    }
 }

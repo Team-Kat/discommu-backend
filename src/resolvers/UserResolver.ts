@@ -93,7 +93,7 @@ export default class {
         if ((userID !== ctx.user.discordID) && !ctx.user.permissions.includes("admin"))
             throw new ApolloError("You can only edit your info", "NO_PERMISSION")
 
-        if ((data.permissions || data.badges) && !ctx.user.permissions.includes("admin"))
+        if ((data.permissions || data.badges) && !(ctx.user.permissions.includes("MODIFY_POINTS") || ctx.user.permissions.includes("admin")))
             throw new ApolloError("To edit permissions, you need the administer permission", "NO_PERMISSION");
 
         return await ctx.userCache.getUser(
