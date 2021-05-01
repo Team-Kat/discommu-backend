@@ -1,4 +1,7 @@
-import { Resolver, Query, Ctx, Arg } from "type-graphql";
+import { Resolver, Query, Ctx, Arg, Info } from "type-graphql";
+import { GraphQLResolveInfo } from "graphql";
+
+import graphqlFields from "graphql-fields";
 
 import TContext from "../types/context";
 import { GraphQLTUser } from "../types/graphql/User";
@@ -34,8 +37,8 @@ export default class DefaultResolver {
     }
 
     @Query(returns => [GraphQLTUser])
-    async users(@Ctx() ctx: TContext) {
-        const users = await UserModel.find({});
+    async users(@Ctx() ctx: TContext, @Info() info: GraphQLResolveInfo) {
+        const users = await UserModel.find({}, Object.keys(graphqlFields(info)).join(" "));
         let res = [];
 
         for (const dbUser of users) {
