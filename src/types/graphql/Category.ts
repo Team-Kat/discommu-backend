@@ -15,6 +15,6 @@ class GraphQLTCategory {
     type: categoryType;
 
     @Field(type => GraphQLTUser)
-    author: GraphQLTUser;
+    author;
 }
 export default GraphQLTCategory;

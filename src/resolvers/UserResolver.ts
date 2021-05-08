@@ -36,6 +36,11 @@ export default class {
     }
 
     @FieldResolver()
+    async description(@Root() root: TUser) {
+        return root.description;
+    }
+
+    @FieldResolver()
     async point(@Root() root: TUser) {
         return root.point;
     }

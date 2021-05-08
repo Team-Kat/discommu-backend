@@ -7,11 +7,12 @@ import { ApolloError } from "apollo-server-errors";
 import TContext from "../types/context";
 import GraphQLTUser from "../types/graphql/User";
 
-import { UserModel } from "../database";
+import { UserModel, CategoryModel } from "../database";
 
 import config from "../../config.json";
 import badges from "../data/json/badges.json";
 import GraphQLTBadge from "../types/graphql/Badge";
+import GraphQLTCategory from "../types/graphql/Category";
 
 @Resolver()
 export default class DefaultResolver {
@@ -86,6 +87,15 @@ export default class DefaultResolver {
                 ...badges[badge]
             })
         }
+
+        return res;
+    }
+
+    @Query(returns => GraphQLTCategory, { nullable: true })
+    async category(@Arg("name") name: string) {
+        const res = await CategoryModel.findOne({ name: name });
+        if (!res)
+            return null;
 
         return res;
     }

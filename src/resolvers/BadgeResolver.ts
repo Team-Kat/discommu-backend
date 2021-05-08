@@ -14,7 +14,7 @@ export default class {
     }
 
     @FieldResolver()
-    async description(@Root() root: TBadge, @Ctx() ctx: TContext) {
+    async icon(@Root() root: TBadge, @Ctx() ctx: TContext) {
         return ctx.url + "/" + config.staticDir + "/" + root.icon;
     }
 

@@ -6,7 +6,10 @@ import { ICategoryDocument, ICategoryModel } from "./categories.types";
 const CategorySchema = new Schema<ICategoryDocument, ICategoryModel>({
     authorID: String,
     name: String,
-    description: String,
+    description: {
+        type: String,
+        default: ""
+    },
     type: {
         type: Number,
         default: 1
