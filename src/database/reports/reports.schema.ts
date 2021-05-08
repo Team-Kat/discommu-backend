@@ -2,7 +2,9 @@ import { Schema } from "mongoose";
 
 import { report } from "./reports.statics";
 import { edit } from "./reports.methods";
-import { IReportDocument, IReportModel, reportType } from "./reports.types";
+import { IReportDocument, IReportModel } from "./reports.types";
+
+import { reportType } from "../../types/report";
 
 const Reportchema = new Schema<IReportDocument, IReportModel>({
     content: String,

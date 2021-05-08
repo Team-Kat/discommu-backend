@@ -1,4 +1,5 @@
-import { IReportModel, IReportDocument, reportType } from "./reports.types";
+import { IReportModel, IReportDocument } from "./reports.types";
+import { reportType } from "../../types/report";
 
 export async function report(
     this: IReportModel,

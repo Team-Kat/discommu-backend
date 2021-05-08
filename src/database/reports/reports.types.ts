@@ -1,11 +1,5 @@
 import { Document, Model } from "mongoose";
-
-export enum reportType {
-    POST = 0,
-    CATEGORY = 1,
-    USER = 2,
-    SUGGEST = 3
-}
+import { reportType } from "../../types/report";
 
 
 export interface IReport {
