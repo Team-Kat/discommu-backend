@@ -4,6 +4,7 @@ import { GraphQLResolveInfo } from "graphql";
 import graphqlFields from "graphql-fields";
 import { ApolloError } from "apollo-server-errors";
 
+import { categoryType } from "../types/category";
 import TContext from "../types/context";
 import GraphQLTUser from "../types/graphql/User";
 
@@ -46,7 +47,7 @@ export default class DefaultResolver {
         @Arg("limitIndex", { defaultValue: 1, description: "Index of divided users", nullable: true }) limitIndex?: number
     ) {
         if (limitIndex <= 0)
-            throw new ApolloError("limitIndex should be a natural number", "TYPE_ERROR")
+            throw new ApolloError("limitIndex should be a natural number", "TYPE_ERROR");
 
         let res = [];
         let users = await UserModel.find({}, Object.keys(graphqlFields(info)).join(" "), {
@@ -57,7 +58,7 @@ export default class DefaultResolver {
         for (const dbUser of users) {
             const user = await dbUser.getUser(ctx.userCache);
             if (user)
-                res.push(user)
+                res.push(user);
         }
 
         return res;
@@ -98,5 +99,34 @@ export default class DefaultResolver {
             return null;
 
         return res;
+    }
+
+    @Query(returns => [GraphQLTCategory])
+    async categories(
+        @Ctx() ctx: TContext,
+        @Info() info: GraphQLResolveInfo,
+        @Arg("query", { nullable: true }) query?: string,
+        @Arg("authorID", { nullable: true, description: "The category's author's ID" }) authorID?: string,
+        @Arg("type", { nullable: true, description: "The category's type's type" }) type?: categoryType,
+        @Arg("limit", { nullable: true, description: "How many categories to divide" }) limit?: number,
+        @Arg("limitIndex", { defaultValue: 1, description: "Index of divided categories", nullable: true }) limitIndex?: number
+    ) {
+        if (limitIndex <= 0)
+            throw new ApolloError("limitIndex should be a natural number", "TYPE_ERROR");
+
+        let searchQuery = {};
+        if (query)
+            searchQuery["$text"] = { $search: query };
+        if (authorID)
+            searchQuery["authorID"] = authorID;
+        if (type)
+            searchQuery["type"] = type;
+
+        let categories = await CategoryModel.find(searchQuery, undefined, {
+            limit: limit || undefined,
+            skip: (limitIndex - 1) * limit
+        }).exec();
+
+        return categories;
     }
 }
