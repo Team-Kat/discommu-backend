@@ -3,3 +3,10 @@ export enum categoryType {
     VERIFIED = 2,
     OFFICIAL = 3
 }
+
+export type TCategory = {
+    authorID: string,
+    name: string,
+    description: string,
+    type: categoryType
+}
