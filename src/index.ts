@@ -3,6 +3,7 @@ import "reflect-metadata";
 import Express, { static as ExpressStatic } from "express";
 import { buildSchema } from "type-graphql";
 import { ApolloServer } from "apollo-server-express";
+import { PubSub } from "graphql-subscriptions";
 import { verify } from "jsonwebtoken";
 
 import { dbConnect, dbDisconnect } from "./database";
@@ -29,6 +30,7 @@ process.on("exit", () => {
 });
 
 (async () => {
+    const pubSub = new PubSub();
     const schema = await buildSchema({
         resolvers: [
             DefaultResolver,
@@ -67,7 +69,8 @@ process.on("exit", () => {
             return {
                 userCache: uCache,
                 user: user || null,
-                url: req.protocol + "://" + req.get("host")
+                url: req.protocol + "://" + req.get("host"),
+                pubsub: pubSub
             }
         }
     });
