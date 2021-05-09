@@ -6,6 +6,7 @@ import TContext from "../types/context";
 import { categoryType, TCategory } from "../types/category";
 
 import CreateCategory from "../inputs/CreateCategory";
+import EditCategory from "../inputs/EditCategory";
 import { CategoryModel } from "../database";
 
 @Resolver(GraphQLTCategory)
@@ -47,7 +48,7 @@ export default class {
     }
 
     @Authorized(["SELF_CATEGORY"])
-    @Mutation(returns => GraphQLTCategory)
+    @Mutation(returns => GraphQLTCategory, { nullable: true })
     async editCategoryDescription(@Arg("name") categoryName: string, @Arg("description") description: string) {
         if (description.length >= 100)
             throw new ApolloError("description must be shorter than or equal to 100 characters.", "FIELD_LENGTH_OVER");
@@ -60,12 +61,27 @@ export default class {
     }
 
     @Authorized(["ADMIN"])
-    @Mutation(returns => GraphQLTCategory)
+    @Mutation(returns => GraphQLTCategory, { nullable: true })
     async editCategoryType(@Arg("name") categoryName: string, @Arg("type") type: categoryType) {
         return await CategoryModel.findOneAndUpdate(
             { name: categoryName },
             { $set: { type: type } },
             { new: true }
         );
+    }
+
+    @Authorized(["SELF_CATEGORY"])
+    @Mutation(returns => GraphQLTCategory, { nullable: true })
+    async editCategory(@Ctx() ctx: TContext, @Arg("name") categoryName: string, @Arg("data") data: EditCategory) {
+        if (data.type && !ctx.user.permissions.includes("admin"))
+            throw new ApolloError("To edit category type, you need the administer permission", "NO_PERMISSION");
+
+        if (data.description)
+            await this.editCategoryDescription(categoryName, data.description);
+
+        if (data.type)
+            await this.editCategoryType(categoryName, data.type);
+
+        return await CategoryModel.findOne({ name: categoryName });
     }
 }

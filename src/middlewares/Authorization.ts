@@ -33,16 +33,18 @@ const DiscommuAuthChecker: AuthChecker<TContext> = async ({ context, args }, rol
                     res = false;
                 break;
             case "SELF_CATEGORY":
-                if (!context.user.permissions.includes("MODIFY_CATEGORIES"))
-                    res = false;
-                else if (context.user.permissions.includes("admin"))
+                if (context.user.permissions.includes("admin"))
                     res = res;
-
-                const category = await CategoryModel.findOne({ name: args.name });
-                if (category?.authorID !== context.user.description)
+                else if (!context.user.permissions.includes("MODIFY_CATEGORIES"))
                     res = false;
-                else
-                    res = true;
+                else {
+                    const category = await CategoryModel.findOne({ name: args.name });
+                    if (category?.authorID !== context.user.discordID)
+                        res = false;
+                    else
+                        res = true;
+                }
+
                 break;
         }
     }
