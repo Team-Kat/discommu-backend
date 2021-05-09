@@ -38,7 +38,7 @@ const DiscommuAuthChecker: AuthChecker<TContext> = async ({ context, args }, rol
                 else if (context.user.permissions.includes("admin"))
                     res = res;
 
-                const category = await CategoryModel.findOne({ name: args.categoryName });
+                const category = await CategoryModel.findOne({ name: args.name });
                 if (category?.authorID !== context.user.description)
                     res = false;
                 else

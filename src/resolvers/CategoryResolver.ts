@@ -45,4 +45,17 @@ export default class {
         await pubsub.publish("categoryAdded", category)
         return category;
     }
+
+    @Authorized(["SELF_CATEGORY"])
+    @Mutation(returns => GraphQLTCategory)
+    async editCategoryDescription(@Arg("name") categoryName: string, @Arg("description") description: string) {
+        if (description.length >= 100)
+            throw new ApolloError("description must be shorter than or equal to 100 characters.", "FIELD_LENGTH_OVER");
+
+        return await CategoryModel.findOneAndUpdate(
+            { name: categoryName },
+            { $set: { description: description } },
+            { new: true }
+        );
+    }
 }
