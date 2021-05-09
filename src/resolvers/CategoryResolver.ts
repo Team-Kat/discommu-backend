@@ -1,4 +1,4 @@
-import { FieldResolver, Resolver, Root, Ctx, Mutation, Authorized, Arg } from "type-graphql";
+import { FieldResolver, Resolver, Root, Ctx, Mutation, Authorized, Arg, PubSub, PubSubEngine, Subscription } from "type-graphql";
 import { ApolloError } from "apollo-server-errors";
 import GraphQLTCategory from "../types/graphql/Category";
 
@@ -30,12 +30,19 @@ export default class {
         return await ctx.userCache.getUser(root.authorID);
     }
 
+    @Subscription(() => GraphQLTCategory, { topics: "categoryAdded" })
+    async categoryAdded(@Root() category: TCategory) {
+        return category;
+    }
+
     @Authorized(["MODIFY_CATEGORIES"])
     @Mutation(returns => GraphQLTCategory)
-    async createCategory(@Ctx() ctx: TContext, @Arg("data") data: CreateCategory) {
+    async createCategory(@PubSub() pubsub: PubSubEngine, @Ctx() ctx: TContext, @Arg("data") data: CreateCategory) {
         if (await CategoryModel.exists({ name: data.name }))
             throw new ApolloError(`Category with name ${data.name} exists`, "CATEGORY_EXISTS");
 
-        return await CategoryModel.create({ name: data.name, description: data.description, type: 1, authorID: ctx.user.discordID });
+        const category = await CategoryModel.create({ name: data.name, description: data.description, type: 1, authorID: ctx.user.discordID })
+        await pubsub.publish("categoryAdded", category)
+        return category;
     }
 }

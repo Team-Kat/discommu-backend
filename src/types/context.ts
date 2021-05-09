@@ -4,9 +4,8 @@ import TUser from "./user";
 import { userCache } from "../utils/cache"
 
 type TContext = {
-    user: TUser
+    user?: TUser
+    url?: string
     userCache: userCache
-    url: string
-    pubsub: PubSub
 }
 export default TContext

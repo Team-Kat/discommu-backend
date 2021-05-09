@@ -1,6 +1,7 @@
 import "reflect-metadata";
 
 import Express, { static as ExpressStatic } from "express";
+import { createServer } from "http";
 import { buildSchema } from "type-graphql";
 import { ApolloServer } from "apollo-server-express";
 import { PubSub } from "graphql-subscriptions";
@@ -32,6 +33,7 @@ process.on("exit", () => {
 (async () => {
     const pubSub = new PubSub();
     const schema = await buildSchema({
+        pubSub,
         resolvers: [
             DefaultResolver,
             MutationResolver,
@@ -49,16 +51,20 @@ process.on("exit", () => {
         schema,
         logger,
         formatError: error => {
-            logger.error(`[${error.extensions.code}] ${error.message}  (Path: ${error.path}, Original: ${error.originalError.stack})`)
+            logger.error(`[${error.extensions?.code}] ${error.message}  (Path: ${error.path}, Original: ${error.originalError?.stack})`)
             return error
         },
         context: async ({ req }): Promise<TContext> => {
-            let token = null;
+            const uCache = new userCache();
+            let res = {
+                userCache: uCache,
+            }
+            if (!req)
+                return res
 
+            let token = null;
             if (req.headers.authorization && req.headers.authorization.startsWith("Bearer "))
                 token = req.headers.authorization.slice("Bearer ".length);
-
-            const uCache = new userCache();
             let user = null;
 
             if (token) {
@@ -67,10 +73,9 @@ process.on("exit", () => {
             }
 
             return {
-                userCache: uCache,
+                ...res,
                 user: user || null,
-                url: req.protocol + "://" + req.get("host"),
-                pubsub: pubSub
+                url: req.protocol + "://" + req.get("host")
             }
         }
     });
@@ -79,7 +84,11 @@ process.on("exit", () => {
     app.use('/static', ExpressStatic('src/data'));
     apollo.applyMiddleware({ app });
 
-    app.listen(config.port || 3000);
-    dbConnect();
-    logger.info("Server Start");
+    const httpServer = createServer(app);
+    apollo.installSubscriptionHandlers(httpServer);
+
+    httpServer.listen(config.port || 3000, async () => {
+        dbConnect();
+        logger.info("Server Start");
+    });
 })()
