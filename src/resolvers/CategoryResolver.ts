@@ -3,7 +3,7 @@ import { ApolloError } from "apollo-server-errors";
 import GraphQLTCategory from "../types/graphql/Category";
 
 import TContext from "../types/context";
-import { TCategory } from "../types/category";
+import { categoryType, TCategory } from "../types/category";
 
 import CreateCategory from "../inputs/CreateCategory";
 import { CategoryModel } from "../database";
@@ -55,6 +55,16 @@ export default class {
         return await CategoryModel.findOneAndUpdate(
             { name: categoryName },
             { $set: { description: description } },
+            { new: true }
+        );
+    }
+
+    @Authorized(["ADMIN"])
+    @Mutation(returns => GraphQLTCategory)
+    async editCategoryType(@Arg("name") categoryName: string, @Arg("type") type: categoryType) {
+        return await CategoryModel.findOneAndUpdate(
+            { name: categoryName },
+            { $set: { type: type } },
             { new: true }
         );
     }
