@@ -2,6 +2,7 @@ import { Field, ID, ObjectType } from "type-graphql";
 
 import GraphQLTUser from "./User";
 import GraphQLTCategory from "./Category";
+import GraphQLTComment from "./Comment";
 
 @ObjectType()
 class GraphQLTPost {
