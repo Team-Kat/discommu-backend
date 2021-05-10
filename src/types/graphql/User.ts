@@ -37,5 +37,8 @@ class GraphQLTUser {
 
     @Field(type => [GraphQLTPost])
     posts;
+
+    @Field(type => [GraphQLTPost])
+    hearts;
 }
 export default GraphQLTUser;
