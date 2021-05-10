@@ -61,8 +61,19 @@ export default class {
         return posts;
     }
 
-    @Subscription(() => GraphQLTCategory, { topics: "categoryAdded" })
-    async categoryAdded(@Root() category: TCategory) {
+    @Subscription(() => GraphQLTCategory, {
+        topics: "categoryAdded",
+        filter: ({ payload, args }) =>
+            (args.authorID ? payload.authorID == args.authorID : true)
+            && (args.type ? payload.type == args.type : true)
+            && (args.query ? (payload.name + payload.description).includes(args.query) : true)
+    })
+    async categoryAdded(
+        @Root() category: TCategory,
+        @Arg("query", { nullable: true }) query?: string,
+        @Arg("authorID", { nullable: true, description: "The category's author's ID" }) authorID?: string,
+        @Arg("type", { nullable: true, description: "The category's type's type" }) type?: categoryType
+    ) {
         return category;
     }
 
