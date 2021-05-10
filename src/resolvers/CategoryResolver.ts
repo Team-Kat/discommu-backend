@@ -1,6 +1,8 @@
 import { FieldResolver, Resolver, Root, Ctx, Mutation, Authorized, Arg, PubSub, PubSubEngine, Subscription } from "type-graphql";
 import { ApolloError } from "apollo-server-errors";
+
 import GraphQLTCategory from "../types/graphql/Category";
+import GraphQLTPost from "../types/graphql/Post";
 
 import TContext from "../types/context";
 import { categoryType, TCategory } from "../types/category";
@@ -29,6 +31,34 @@ export default class {
     @FieldResolver()
     async author(@Root() root: TCategory, @Ctx() ctx: TContext) {
         return await ctx.userCache.getUser(root.authorID);
+    }
+
+    @FieldResolver(returns => [GraphQLTPost])
+    async posts(
+        @Root() root: TCategory,
+        @Arg("query", { nullable: true }) query?: string,
+        @Arg("authorID", { nullable: true, description: "The post's author's ID" }) authorID?: string,
+        @Arg("tag", type => [String], { nullable: true, description: "The post's tag" }) tag?: string[],
+        @Arg("limit", { nullable: true, description: "How many posts to divide" }) limit?: number,
+        @Arg("limitIndex", { defaultValue: 1, description: "Index of divided posts", nullable: true }) limitIndex?: number
+    ) {
+        if (limitIndex <= 0)
+            throw new ApolloError("limitIndex should be a natural number", "TYPE_ERROR");
+
+        let searchQuery = { category: root.name };
+        if (query)
+            searchQuery["$text"] = { $search: query };
+        if (tag)
+            searchQuery["tag"] = { $all: tag };
+        if (authorID)
+            searchQuery["authorID"] = authorID;
+
+        let posts = await PostModel.find(searchQuery, undefined, {
+            limit: limit || undefined,
+            skip: (limitIndex - 1) * limit
+        }).exec();
+
+        return posts;
     }
 
     @Subscription(() => GraphQLTCategory, { topics: "categoryAdded" })
