@@ -1,4 +1,5 @@
 type TPost = {
+    _id: string,
     authorID: string,
     title: string,
     content: string,
