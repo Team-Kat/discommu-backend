@@ -100,7 +100,6 @@ export default class DefaultResolver {
 
     @Query(returns => [GraphQLTCategory])
     async categories(
-        @Ctx() ctx: TContext,
         @Arg("query", { nullable: true }) query?: string,
         @Arg("authorID", { nullable: true, description: "The category's author's ID" }) authorID?: string,
         @Arg("type", { nullable: true, description: "The category's type's type" }) type?: categoryType,
@@ -133,5 +132,35 @@ export default class DefaultResolver {
             return null;
 
         return res;
+    }
+
+    @Query(returns => [GraphQLTPost])
+    async posts(
+        @Arg("query", { nullable: true }) query?: string,
+        @Arg("authorID", { nullable: true, description: "The post's author's ID" }) authorID?: string,
+        @Arg("category", { nullable: true, description: "The post's category" }) category?: string,
+        @Arg("tag", type => [String], { nullable: true, description: "The post's tag" }) tag?: string[],
+        @Arg("limit", { nullable: true, description: "How many posts to divide" }) limit?: number,
+        @Arg("limitIndex", { defaultValue: 1, description: "Index of divided posts", nullable: true }) limitIndex?: number
+    ) {
+        if (limitIndex <= 0)
+            throw new ApolloError("limitIndex should be a natural number", "TYPE_ERROR");
+
+        let searchQuery = {};
+        if (query)
+            searchQuery["$text"] = { $search: query };
+        if (tag)
+            searchQuery["tag"] = { $all: tag };
+        if (authorID)
+            searchQuery["authorID"] = authorID;
+        if (category)
+            searchQuery["category"] = category;
+
+        let posts = await PostModel.find(searchQuery, undefined, {
+            limit: limit || undefined,
+            skip: (limitIndex - 1) * limit
+        }).exec();
+
+        return posts;
     }
 }

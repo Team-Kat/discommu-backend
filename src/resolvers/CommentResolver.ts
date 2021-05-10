@@ -3,7 +3,7 @@ import GraphQLTComment from "../types/graphql/Comment";
 
 import TContext from "../types/context";
 import TComment from "../types/comment";
-import { CategoryModel, PostModel } from "../database";
+import { PostModel } from "../database";
 
 @Resolver(GraphQLTComment)
 export default class {
