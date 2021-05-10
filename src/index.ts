@@ -89,6 +89,6 @@ process.on("exit", () => {
 
     httpServer.listen(config.port || 3000, async () => {
         dbConnect();
-        logger.info("Server Start");
+        logger.info(`Server Start`);
     });
 })()

@@ -7,7 +7,7 @@ import { categoryType, TCategory } from "../types/category";
 
 import CreateCategory from "../inputs/CreateCategory";
 import EditCategory from "../inputs/EditCategory";
-import { CategoryModel } from "../database";
+import { CategoryModel, PostModel } from "../database";
 
 @Resolver(GraphQLTCategory)
 export default class {
@@ -83,5 +83,16 @@ export default class {
             await this.editCategoryType(categoryName, data.type);
 
         return await CategoryModel.findOne({ name: categoryName });
+    }
+
+    @Authorized(["SELF_CATEGORY"])
+    @Mutation(returns => GraphQLTCategory, { nullable: true })
+    async deleteCategory(@Ctx() ctx: TContext, @Arg("name") categoryName: string) {
+        const posts = await PostModel.find({ category: categoryName });
+        if (posts.length >= 10)
+            throw new ApolloError("Category has posts more than 10", "TOO_MANY_POSTS")
+
+        await posts.forEach(async post => await post.delete())
+        return await CategoryModel.findOneAndDelete({ name: categoryName });
     }
 }
