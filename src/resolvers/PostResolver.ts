@@ -1,10 +1,9 @@
-import { FieldResolver, Resolver, Root, Ctx, Mutation, Authorized, Arg, PubSub, PubSubEngine, Subscription } from "type-graphql";
-import { ApolloError } from "apollo-server-errors";
+import { FieldResolver, Resolver, Root, Ctx } from "type-graphql";
 import GraphQLTPost from "../types/graphql/Post";
 
 import TContext from "../types/context";
 import TPost from "../types/post";
-import { CategoryModel } from "../database";
+import { CategoryModel, CommentModel } from "../database";
 
 @Resolver(GraphQLTPost)
 export default class {
@@ -57,5 +56,10 @@ export default class {
                 res.push(user);
         }
         return res;
+    }
+
+    @FieldResolver()
+    async comments(@Root() root: TPost) {
+        return await CommentModel.find({ postID: root._id })
     }
 }

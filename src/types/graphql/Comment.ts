@@ -14,7 +14,7 @@ class GraphQLTComment {
     @Field(type => GraphQLTUser)
     author;
 
-    @Field(type => GraphQLTUser)
+    @Field(type => GraphQLTUser, { nullable: true })
     reply;
 
     @Field(type => GraphQLTPost)

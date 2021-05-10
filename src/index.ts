@@ -23,6 +23,7 @@ import UserResolver from "./resolvers/UserResolver";
 import BadgeResolver from "./resolvers/BadgeResolver";
 import CategoryResolver from "./resolvers/CategoryResolver";
 import PostResolver from "./resolvers/PostResolver";
+import CommentResolver from "./resolvers/CommentResolver";
 
 import TContext from "./types/context";
 
@@ -41,7 +42,8 @@ process.on("exit", () => {
             UserResolver,
             BadgeResolver,
             CategoryResolver,
-            PostResolver
+            PostResolver,
+            CommentResolver
         ],
         globalMiddlewares: [
             Log
