@@ -10,12 +10,7 @@ export interface IReport {
     userID: string;
 }
 
-export interface IReportDocument extends Document, IReport {
-    addHeart: (this: IReportDocument, userID: string) => Promise<void>;
-    removeHeart: (this: IReportDocument, userID: string) => Promise<void>;
-    watch: () => Promise<IReportDocument>;
-    edit: (data: { title: string, content: string, tag: string[] }) => Promise<void>;
-};
+export interface IReportDocument extends Document, IReport { };
 
 export interface IReportModel extends Model<IReportDocument> {
     findByTag: (tag: string) => Promise<Array<IReportDocument>>;

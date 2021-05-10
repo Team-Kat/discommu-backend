@@ -7,10 +7,5 @@ export interface ICategory {
     type: number;
 }
 
-export interface ICategoryDocument extends Document, ICategory {
-    editDescription: (this: ICategoryDocument, description: string) => Promise<void>;
-    verify: (this: ICategoryDocument) => Promise<boolean>;
-    del: (this: ICategoryDocument) => Promise<boolean>;
-};
-
+export interface ICategoryDocument extends Document, ICategory { };
 export interface ICategoryModel extends Model<ICategoryDocument> { };

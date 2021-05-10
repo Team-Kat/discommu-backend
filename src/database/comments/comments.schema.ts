@@ -1,7 +1,4 @@
 import { Schema } from "mongoose";
-
-import { findByPost, createComment } from "./comments.statics";
-import { edit } from "./comments.methods";
 import { ICommentDocument, ICommentModel } from "./comments.types";
 
 const CommentSchema = new Schema<ICommentDocument, ICommentModel>({
@@ -12,11 +9,11 @@ const CommentSchema = new Schema<ICommentDocument, ICommentModel>({
         type: String,
         default: ""
     },
-    postID: String
+    postID: String,
+    hearts: {
+        type: Array,
+        default: []
+    }
 });
-
-CommentSchema.statics.findByPost = findByPost;
-CommentSchema.statics.createComment = createComment;
-CommentSchema.methods.edit = edit;
 
 export default CommentSchema;
