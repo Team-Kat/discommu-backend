@@ -8,6 +8,7 @@ type TPost = {
     views: number,
 
     tag: string[],
-    comments: string[]
+    comments: string[],
+    hearts: string[]
 }
 export default TPost;

@@ -22,6 +22,7 @@ import MutationResolver from "./resolvers/MutationResolver";
 import UserResolver from "./resolvers/UserResolver";
 import BadgeResolver from "./resolvers/BadgeResolver";
 import CategoryResolver from "./resolvers/CategoryResolver";
+import PostResolver from "./resolvers/PostResolver";
 
 import TContext from "./types/context";
 
@@ -39,7 +40,8 @@ process.on("exit", () => {
             MutationResolver,
             UserResolver,
             BadgeResolver,
-            CategoryResolver
+            CategoryResolver,
+            PostResolver
         ],
         globalMiddlewares: [
             Log

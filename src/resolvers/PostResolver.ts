@@ -4,7 +4,7 @@ import GraphQLTPost from "../types/graphql/Post";
 
 import TContext from "../types/context";
 import TPost from "../types/post";
-import { CategoryModel, PostModel } from "../database";
+import { CategoryModel } from "../database";
 
 @Resolver(GraphQLTPost)
 export default class {
@@ -44,7 +44,18 @@ export default class {
     }
 
     @FieldResolver()
-    async category(@Root() root: TPost, @Ctx() ctx: TContext) {
-        return await CategoryModel.find({ name: root.category });
+    async category(@Root() root: TPost) {
+        return await CategoryModel.findOne({ name: root.category });
+    }
+
+    @FieldResolver()
+    async hearts(@Root() root: TPost, @Ctx() ctx: TContext) {
+        let res = [];
+        for (const userID of root.hearts) {
+            const user = await ctx.userCache.getUser(userID);
+            if (user)
+                res.push(user);
+        }
+        return res;
     }
 }

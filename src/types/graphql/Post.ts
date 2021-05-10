@@ -28,9 +28,12 @@ class GraphQLTPost {
     views: number;
 
     @Field(type => [String])
-    tags: string[];
+    tag: string[];
 
     @Field(type => [GraphQLTComment])
     comments;
+
+    @Field(type => [GraphQLTUser])
+    hearts;
 }
 export default GraphQLTPost;

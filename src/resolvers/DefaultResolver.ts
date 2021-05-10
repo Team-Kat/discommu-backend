@@ -6,12 +6,13 @@ import { categoryType } from "../types/category";
 import TContext from "../types/context";
 import GraphQLTUser from "../types/graphql/User";
 
-import { UserModel, CategoryModel } from "../database";
+import { UserModel, CategoryModel, PostModel } from "../database";
 
 import config from "../../config.json";
 import badges from "../data/json/badges.json";
 import GraphQLTBadge from "../types/graphql/Badge";
 import GraphQLTCategory from "../types/graphql/Category";
+import GraphQLTPost from "../types/graphql/Post";
 
 @Resolver()
 export default class DefaultResolver {
@@ -123,5 +124,14 @@ export default class DefaultResolver {
         }).exec();
 
         return categories;
+    }
+
+    @Query(returns => GraphQLTPost, { nullable: true })
+    async post(@Arg("id") id: string) {
+        const res = await PostModel.findById(id);
+        if (!res)
+            return null;
+
+        return res;
     }
 }
