@@ -54,8 +54,8 @@ export default class {
             searchQuery["authorID"] = authorID;
 
         let posts = await PostModel.find(searchQuery, undefined, {
-            limit: limit || undefined,
-            skip: (limitIndex - 1) * limit
+            limit: limit ?? undefined,
+            skip: limit && limitIndex ? (limitIndex - 1) * limit : undefined
         }).exec();
 
         return posts;

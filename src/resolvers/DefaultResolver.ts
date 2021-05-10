@@ -49,7 +49,7 @@ export default class DefaultResolver {
 
         let res = [];
         let users = await UserModel.find({}, undefined, {
-            limit: limit || undefined,
+            limit: limit ?? undefined,
             skip: (limitIndex - 1) * limit
         }).exec();
 
@@ -118,7 +118,7 @@ export default class DefaultResolver {
             searchQuery["type"] = type;
 
         let categories = await CategoryModel.find(searchQuery, undefined, {
-            limit: limit || undefined,
+            limit: limit ?? undefined,
             skip: (limitIndex - 1) * limit
         }).exec();
 
@@ -157,8 +157,8 @@ export default class DefaultResolver {
             searchQuery["category"] = category;
 
         let posts = await PostModel.find(searchQuery, undefined, {
-            limit: limit || undefined,
-            skip: (limitIndex - 1) * limit
+            limit: limit ?? undefined,
+            skip: limit && limitIndex ? (limitIndex - 1) * limit : undefined
         }).exec();
 
         return posts;
