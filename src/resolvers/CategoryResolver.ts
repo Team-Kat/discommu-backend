@@ -82,8 +82,8 @@ export default class {
         if (await CategoryModel.exists({ name: data.name }))
             throw new ApolloError(`Category with name ${data.name} exists`, "CATEGORY_EXISTS");
 
-        const category = await CategoryModel.create({ name: data.name, description: data.description, type: 1, authorID: ctx.user.discordID })
-        await pubsub.publish("categoryAdded", category)
+        const category = await CategoryModel.create({ name: data.name, description: data.description, type: 1, authorID: ctx.user.discordID });
+        await pubsub.publish("categoryAdded", category);
         return category;
     }
 

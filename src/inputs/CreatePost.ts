@@ -12,9 +12,12 @@ export default class CreatePost {
     })
     title: string;
 
-    @Field({ nullable: true, description: "The post's content" })
+    @Field({ description: "The post's content" })
     content: string;
 
-    @Field(type => [String], { nullable: true, description: "The post's tag" })
+    @Field({ description: "The post's category" })
+    category: string;
+
+    @Field(type => [String], { nullable: true, description: "The post's tag", defaultValue: undefined })
     tag: string[];
 }

@@ -1,9 +1,13 @@
-import { FieldResolver, Resolver, Root, Ctx, Subscription, Arg } from "type-graphql";
+import { FieldResolver, Resolver, Root, Ctx, Subscription, Arg, Authorized, Mutation, PubSub, PubSubEngine } from "type-graphql";
+import { ApolloError } from "apollo-server-errors";
+
 import GraphQLTPost from "../types/graphql/Post";
 
 import TContext from "../types/context";
 import TPost from "../types/post";
-import { CategoryModel, CommentModel } from "../database";
+
+import CreatePost from "../inputs/CreatePost";
+import { CategoryModel, CommentModel, PostModel } from "../database";
 
 @Resolver(GraphQLTPost)
 export default class {
@@ -76,6 +80,17 @@ export default class {
         @Arg("authorID", { nullable: true, description: "The post's author's ID" }) authorID?: string,
         @Arg("tag", type => [String], { nullable: true, description: "The post's tag" }) tag?: string[]
     ) {
+        return post;
+    }
+
+    @Authorized()
+    @Mutation(returns => GraphQLTPost)
+    async createPost(@PubSub() pubsub: PubSubEngine, @Ctx() ctx: TContext, @Arg("data") data: CreatePost) {
+        if (!(await CategoryModel.exists({ name: data.category })))
+            throw new ApolloError(`There is no category named ${data.category}`, "CATEGORY_DOES_NOT_EXISTS");
+
+        const post = await PostModel.create({ title: data.title, content: data.content, tag: data.tag, authorID: ctx.user.discordID, timestamp: Date.now(), category: data.category });
+        await pubsub.publish("postAdded", post);
         return post;
     }
 }
