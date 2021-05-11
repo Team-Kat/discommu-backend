@@ -11,6 +11,9 @@ const DiscommuAuthChecker: AuthChecker<TContext> = async ({ context, args }, rol
     if (!roles.length)
         return true;
 
+    if (context.user.permissions.includes("admin"))
+        return true;
+
     let res = true;
     for (const role of roles) {
         switch (role) {

@@ -71,8 +71,7 @@ export default class {
     async categoryAdded(
         @Root() category: TCategory,
         @Arg("query", { nullable: true }) query?: string,
-        @Arg("authorID", { nullable: true, description: "The category's author's ID" }) authorID?: string,
-        @Arg("type", { nullable: true, description: "The category's type's type" }) type?: categoryType
+        @Arg("authorID", { nullable: true, description: "The category's author's ID" }) authorID?: string
     ) {
         return category;
     }
