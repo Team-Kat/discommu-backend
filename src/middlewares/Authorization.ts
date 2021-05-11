@@ -18,10 +18,7 @@ const DiscommuAuthChecker: AuthChecker<TContext> = async ({ context, args }, rol
     for (const role of roles) {
         switch (role) {
             case "ADMIN":
-                if (context.user.permissions.includes("admin"))
-                    return true;
-                else
-                    res = false;
+                res = false;
                 break;
             case "USER_EDIT":
                 if (args.id && ((args.id === context.user.discordID) || context.user.permissions.includes("admin")))

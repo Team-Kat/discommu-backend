@@ -1,4 +1,4 @@
-import { FieldResolver, Resolver, Root, Ctx } from "type-graphql";
+import { FieldResolver, Resolver, Root, Ctx, Subscription, Arg } from "type-graphql";
 import GraphQLTPost from "../types/graphql/Post";
 
 import TContext from "../types/context";
@@ -61,5 +61,21 @@ export default class {
     @FieldResolver()
     async comments(@Root() root: TPost) {
         return await CommentModel.find({ postID: root._id })
+    }
+
+    @Subscription(() => GraphQLTPost, {
+        topics: "postAdded",
+        filter: ({ payload, args }) =>
+            (args.authorID ? payload.authorID == args.authorID : true)
+            && (args.tag ? args.tag.every(r => payload.tag.includes(r)) : true)
+            && (args.query ? (payload.title + payload.content).includes(args.query) : true)
+    })
+    async postAdded(
+        @Root() post: TPost,
+        @Arg("query", { nullable: true }) query?: string,
+        @Arg("authorID", { nullable: true, description: "The post's author's ID" }) authorID?: string,
+        @Arg("tag", type => [String], { nullable: true, description: "The post's tag" }) tag?: string[]
+    ) {
+        return post;
     }
 }
