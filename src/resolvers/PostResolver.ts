@@ -3,6 +3,8 @@ import { ApolloError } from "apollo-server-errors";
 
 import GraphQLTPost from "../types/graphql/Post";
 
+import getElements from "../utils/getElements";
+
 import TContext from "../types/context";
 import TPost from "../types/post";
 
@@ -111,6 +113,16 @@ export default class {
     async editPostContent(@Arg("id") id: string, @Arg("content") content: string) {
         return await PostModel.findByIdAndUpdate(id,
             { $set: { content: content } },
+            { new: true }
+        );
+    }
+
+    @Authorized(["SELF_POST"])
+    @Mutation(returns => GraphQLTPost)
+    async editPostTag(@Arg("id") id: string, @Arg("tag", type => [String]) tag: string[]) {
+        const post = await PostModel.findById(id);
+        return await PostModel.findByIdAndUpdate(id,
+            { $set: { tag: getElements(post.tag, tag) } },
             { new: true }
         );
     }
