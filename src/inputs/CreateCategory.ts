@@ -5,7 +5,7 @@ import { MaxLength } from "class-validator";
 export default class CreateCategory {
     @Field({ description: "The category's name" })
     @MaxLength(20, {
-        message: "Name is too long (Max 100 letters)",
+        message: "Name is too long (Max 20 letters)",
         context: {
             code: "FIELD_LENGTH_OVER"
         }
