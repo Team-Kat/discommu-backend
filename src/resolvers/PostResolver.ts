@@ -93,4 +93,16 @@ export default class {
         await pubsub.publish("postAdded", post);
         return post;
     }
+
+    @Authorized(["SELF_POST"])
+    @Mutation(returns => GraphQLTPost)
+    async editPostTitle(@Arg("id") id: string, @Arg("title") title: string) {
+        if (title.length >= 100)
+            throw new ApolloError("title must be shorter than or equal to 100 characters.", "FIELD_LENGTH_OVER");
+
+        return await CategoryModel.findByIdAndUpdate(id,
+            { $set: { title: title } },
+            { new: true }
+        );
+    }
 }
