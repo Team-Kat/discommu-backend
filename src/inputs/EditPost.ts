@@ -2,7 +2,7 @@ import { Field, InputType } from "type-graphql";
 import { MaxLength } from "class-validator";
 
 @InputType()
-export default class CreatePost {
+export default class EditPost {
     @Field({ nullable: true, description: "The post's title" })
     @MaxLength(100, {
         message: "Title is too long (Max 100 letters)",

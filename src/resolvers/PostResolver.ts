@@ -9,6 +9,7 @@ import TContext from "../types/context";
 import TPost from "../types/post";
 
 import CreatePost from "../inputs/CreatePost";
+import EditPost from "../inputs/EditPost";
 import { CategoryModel, CommentModel, PostModel } from "../database";
 
 @Resolver(GraphQLTPost)
@@ -125,5 +126,20 @@ export default class {
             { $set: { tag: getElements(post.tag, tag) } },
             { new: true }
         );
+    }
+
+    @Authorized(["SELF_POST"])
+    @Mutation(returns => GraphQLTPost, { nullable: true })
+    async editPost(@Arg("id") id: string, @Arg("data") data: EditPost) {
+        if (data.title)
+            await this.editPostTitle(id, data.title);
+
+        if (data.content)
+            await this.editPostContent(id, data.content);
+
+        if (data.tag)
+            await this.editPostTag(id, data.tag);
+
+        return await PostModel.findById(id);
     }
 }
