@@ -100,8 +100,17 @@ export default class {
         if (title.length >= 100)
             throw new ApolloError("title must be shorter than or equal to 100 characters.", "FIELD_LENGTH_OVER");
 
-        return await CategoryModel.findByIdAndUpdate(id,
+        return await PostModel.findByIdAndUpdate(id,
             { $set: { title: title } },
+            { new: true }
+        );
+    }
+
+    @Authorized(["SELF_POST"])
+    @Mutation(returns => GraphQLTPost)
+    async editPostContent(@Arg("id") id: string, @Arg("content") content: string) {
+        return await PostModel.findByIdAndUpdate(id,
+            { $set: { content: content } },
             { new: true }
         );
     }
