@@ -142,4 +142,30 @@ export default class {
 
         return await PostModel.findById(id);
     }
+
+    @Authorized()
+    @Mutation(returns => GraphQLTPost, { nullable: true })
+    async addHeart(@Ctx() ctx: TContext, @Arg("id") id: string) {
+        const post = await PostModel.findById(id);
+        if (!post)
+            return null;
+
+        if (post.hearts.includes(ctx.user.discordID))
+            return null;
+
+        return await PostModel.findByIdAndUpdate(id, { $push: { hearts: ctx.user.discordID } }, { new: true });
+    }
+
+    @Authorized()
+    @Mutation(returns => GraphQLTPost, { nullable: true })
+    async removeHeart(@Ctx() ctx: TContext, @Arg("id") id: string) {
+        const post = await PostModel.findById(id);
+        if (!post)
+            return null;
+
+        if (!post.hearts.includes(ctx.user.discordID))
+            return null;
+
+        return await PostModel.findByIdAndUpdate(id, { $pull: { hearts: ctx.user.discordID } }, { new: true });
+    }
 }
