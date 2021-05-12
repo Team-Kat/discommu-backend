@@ -4,6 +4,12 @@ export enum categoryType {
     OFFICIAL = 3
 }
 
+export enum categorySort {
+    NEWEST = "newest",
+    ALPHABETIC = "alphabetic",
+    POST = "posts"
+}
+
 export type TCategory = {
     authorID: string,
     name: string,
