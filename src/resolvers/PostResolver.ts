@@ -143,6 +143,12 @@ export default class {
         return await PostModel.findById(id);
     }
 
+    @Authorized(["SELF_POST"])
+    @Mutation(returns => GraphQLTPost, { nullable: true })
+    async deletePost(@Arg("id") id: string) {
+        return await PostModel.findByIdAndDelete(id);
+    }
+
     @Authorized()
     @Mutation(returns => GraphQLTPost, { nullable: true })
     async addHeart(@Ctx() ctx: TContext, @Arg("id") id: string) {
