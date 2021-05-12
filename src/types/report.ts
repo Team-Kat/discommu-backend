@@ -4,3 +4,10 @@ export enum reportType {
     USER = 2,
     SUGGEST = 3
 }
+
+export type TReport = {
+    content: string,
+    timestamp: number,
+    type: reportType,
+    data: string
+}
