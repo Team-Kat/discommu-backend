@@ -63,7 +63,7 @@ export default class {
 
     @Authorized(["SELF_COMMENT"])
     @Mutation(returns => GraphQLTComment)
-    async editComment(@Ctx() ctx: TContext, @Arg("id") id: string, @Arg("content") content: string) {
+    async editComment(@Arg("id") id: string, @Arg("content") content: string) {
         if (content.length >= 500)
             throw new ApolloError("content must be shorter than or equal to 100 characters.", "FIELD_LENGTH_OVER");
 
@@ -71,5 +71,11 @@ export default class {
             { $set: { content: content } },
             { new: true }
         )
+    }
+
+    @Authorized(["SELF_COMMENT"])
+    @Mutation(returns => GraphQLTComment)
+    async deleteComment(@Arg("id") id: string) {
+        return await CommentModel.findByIdAndDelete(id)
     }
 }
