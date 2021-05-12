@@ -9,5 +9,6 @@ export type TReport = {
     content: string,
     timestamp: number,
     type: reportType,
-    data: string
+    data: string,
+    userID: string
 }

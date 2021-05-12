@@ -12,6 +12,7 @@ const Reportchema = new Schema<IReportDocument, IReportModel>({
         default: ''
     },
     timestamp: Number,
+    userID: String,
     type: {
         type: String,
         enum: reportType,
