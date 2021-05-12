@@ -18,7 +18,6 @@ import Log from "./middlewares/Log";
 import DiscommuAuthChecker from "./middlewares/Authorization";
 
 import DefaultResolver from "./resolvers/DefaultResolver";
-import MutationResolver from "./resolvers/MutationResolver";
 import UserResolver from "./resolvers/UserResolver";
 import BadgeResolver from "./resolvers/BadgeResolver";
 import CategoryResolver from "./resolvers/CategoryResolver";
@@ -38,7 +37,6 @@ process.on("exit", () => {
         pubSub,
         resolvers: [
             DefaultResolver,
-            MutationResolver,
             UserResolver,
             BadgeResolver,
             CategoryResolver,
