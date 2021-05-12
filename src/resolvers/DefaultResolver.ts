@@ -2,7 +2,7 @@ import { Resolver, Query, Ctx, Arg, Authorized } from "type-graphql";
 
 import { ApolloError } from "apollo-server-errors";
 
-import { categoryType } from "../types/category";
+import { categoryType, categorySort } from "../types/category";
 import { postSort } from "../types/post";
 import TContext from "../types/context";
 import GraphQLTUser from "../types/graphql/User";
@@ -105,7 +105,8 @@ export default class DefaultResolver {
         @Arg("authorID", { nullable: true, description: "The category's author's ID" }) authorID?: string,
         @Arg("type", { nullable: true, description: "The category's type's type" }) type?: categoryType,
         @Arg("limit", { nullable: true, description: "How many categories to divide" }) limit?: number,
-        @Arg("limitIndex", { defaultValue: 1, description: "Index of divided categories", nullable: true }) limitIndex?: number
+        @Arg("limitIndex", { defaultValue: 1, description: "Index of divided categories", nullable: true }) limitIndex?: number,
+        @Arg("sort", { nullable: true, description: "How to sort the results", defaultValue: "newest" }) sort?: categorySort
     ) {
         if (limitIndex <= 0)
             throw new ApolloError("limitIndex should be a natural number", "TYPE_ERROR");
@@ -120,8 +121,29 @@ export default class DefaultResolver {
 
         let categories = await CategoryModel.find(searchQuery, undefined, {
             limit: limit ?? undefined,
-            skip: limit && limitIndex ? (limitIndex - 1) * limit : undefined
+            skip: limit && limitIndex ? (limitIndex - 1) * limit : undefined,
+            sort: {
+                newest: undefined,
+                alphabetic: {
+                    name: 1
+                },
+                posts: undefined
+            }[sort]
         }).exec();
+
+        if (sort === "posts") {
+            categories = await categories.sort(async (a, b) => {
+                const ap = await PostModel.countDocuments({ category: a.name }),
+                    bp = await PostModel.countDocuments({ category: b.name });
+
+                if (ap > bp)
+                    return 1;
+                else if (ap < bp)
+                    return -1;
+                else
+                    return 0;
+            })
+        }
 
         return categories;
     }
