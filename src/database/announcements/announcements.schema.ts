@@ -1,5 +1,7 @@
 import { Schema } from "mongoose";
-import { IAnnouncementDocument, IAnnouncementModel, announcementType } from "./announcements.types";
+import { IAnnouncementDocument, IAnnouncementModel } from "./announcements.types";
+
+import { announcementType } from "../../types/announcement";
 
 const AnnouncementSchema = new Schema<IAnnouncementDocument, IAnnouncementModel>({
     title: String,

@@ -1,10 +1,5 @@
 import { Document, Model } from "mongoose";
-
-export enum announcementType {
-    POST = 0,
-    CATEGORY = 1,
-    ETC = 2
-}
+import { announcementType } from "../../types/announcement";
 
 export interface IAnnouncement {
     title: string;
