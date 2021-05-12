@@ -7,6 +7,9 @@ import { reportType } from "../report";
 
 @ObjectType()
 class GraphQLTReport {
+    @Field(returns => ID)
+    id: string;
+
     @Field()
     content: string;
 
