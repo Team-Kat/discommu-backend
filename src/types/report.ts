@@ -6,6 +6,7 @@ export enum reportType {
 }
 
 export type TReport = {
+    _id: string,
     content: string,
     timestamp: number,
     type: reportType,

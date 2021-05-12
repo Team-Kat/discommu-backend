@@ -5,6 +5,7 @@ export enum announcementType {
 }
 
 export type TAnnouncement = {
+    _id: string,
     title: string,
     content: string,
     timestamp: number,
