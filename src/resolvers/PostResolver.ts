@@ -66,8 +66,19 @@ export default class {
     }
 
     @FieldResolver()
-    async comments(@Root() root: TPost) {
-        return await CommentModel.find({ postID: root._id })
+    async comments(
+        @Root() root: TPost,
+        @Arg("limit", { nullable: true, description: "How many comments to divide" }) limit?: number,
+        @Arg("limitIndex", { defaultValue: 1, description: "Index of divided comments", nullable: true }) limitIndex?: number
+    ) {
+        if (limitIndex <= 0)
+            throw new ApolloError("limitIndex should be a natural number", "TYPE_ERROR");
+
+        const comments = await CommentModel.find({ postID: root._id }, undefined, {
+            limit: limit ?? undefined,
+            skip: limit && limitIndex ? (limitIndex - 1) * limit : undefined
+        }).exec()
+        return comments;
     }
 
     @Subscription(() => GraphQLTPost, {

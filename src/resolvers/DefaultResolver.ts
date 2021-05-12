@@ -119,7 +119,7 @@ export default class DefaultResolver {
 
         let categories = await CategoryModel.find(searchQuery, undefined, {
             limit: limit ?? undefined,
-            skip: (limitIndex - 1) * limit
+            skip: limit && limitIndex ? (limitIndex - 1) * limit : undefined
         }).exec();
 
         return categories;
