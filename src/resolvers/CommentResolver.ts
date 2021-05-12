@@ -1,9 +1,13 @@
-import { FieldResolver, Resolver, Root, Ctx } from "type-graphql";
+import { FieldResolver, Resolver, Root, Ctx, Authorized, Mutation, Arg } from "type-graphql";
+import { ApolloError } from "apollo-server-errors";
+
 import GraphQLTComment from "../types/graphql/Comment";
 
 import TContext from "../types/context";
 import TComment from "../types/comment";
-import { PostModel } from "../database";
+
+import CreateComment from "../inputs/CreateComment";
+import { PostModel, CommentModel } from "../database";
 
 @Resolver(GraphQLTComment)
 export default class {
@@ -46,5 +50,14 @@ export default class {
                 res.push(user);
         }
         return res;
+    }
+
+    @Authorized()
+    @Mutation(returns => GraphQLTComment)
+    async createComment(@Ctx() ctx: TContext, @Arg("postID") postID: string, @Arg("data") data: CreateComment) {
+        if (!(await PostModel.exists({ _id: postID })))
+            throw new ApolloError(`There is no post`, "POST_DOES_NOT_EXISTS");
+
+        return await CommentModel.create({ postID: postID, content: data.content, authorID: ctx.user.discordID, reply: data.reply, timestamp: Date.now() });
     }
 }
