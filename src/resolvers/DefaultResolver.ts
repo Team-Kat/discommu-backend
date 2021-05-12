@@ -3,6 +3,7 @@ import { Resolver, Query, Ctx, Arg, Authorized } from "type-graphql";
 import { ApolloError } from "apollo-server-errors";
 
 import { categoryType } from "../types/category";
+import { postSort } from "../types/post";
 import TContext from "../types/context";
 import GraphQLTUser from "../types/graphql/User";
 
@@ -141,7 +142,8 @@ export default class DefaultResolver {
         @Arg("category", { nullable: true, description: "The post's category" }) category?: string,
         @Arg("tag", type => [String], { nullable: true, description: "The post's tag" }) tag?: string[],
         @Arg("limit", { nullable: true, description: "How many posts to divide" }) limit?: number,
-        @Arg("limitIndex", { defaultValue: 1, description: "Index of divided posts", nullable: true }) limitIndex?: number
+        @Arg("limitIndex", { defaultValue: 1, description: "Index of divided posts", nullable: true }) limitIndex?: number,
+        @Arg("sort", { nullable: true, description: "How to sort the results", defaultValue: "newest" }) sort?: postSort
     ) {
         if (limitIndex <= 0)
             throw new ApolloError("limitIndex should be a natural number", "TYPE_ERROR");
@@ -158,7 +160,19 @@ export default class DefaultResolver {
 
         let posts = await PostModel.find(searchQuery, undefined, {
             limit: limit ?? undefined,
-            skip: limit && limitIndex ? (limitIndex - 1) * limit : undefined
+            skip: limit && limitIndex ? (limitIndex - 1) * limit : undefined,
+            sort: {
+                newest: undefined,
+                alphabetic: {
+                    title: 1
+                },
+                hearts: {
+                    hearts: -1
+                },
+                views: {
+                    views: -1
+                }
+            }[sort]
         }).exec();
 
         return posts;

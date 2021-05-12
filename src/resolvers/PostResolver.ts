@@ -6,7 +6,7 @@ import GraphQLTPost from "../types/graphql/Post";
 import getElements from "../utils/getElements";
 
 import TContext from "../types/context";
-import TPost from "../types/post";
+import { TPost } from "../types/post";
 
 import CreatePost from "../inputs/CreatePost";
 import EditPost from "../inputs/EditPost";
