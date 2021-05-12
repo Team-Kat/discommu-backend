@@ -60,4 +60,16 @@ export default class {
 
         return await CommentModel.create({ postID: postID, content: data.content, authorID: ctx.user.discordID, reply: data.reply, timestamp: Date.now() });
     }
+
+    @Authorized(["SELF_COMMENT"])
+    @Mutation(returns => GraphQLTComment)
+    async editComment(@Ctx() ctx: TContext, @Arg("id") id: string, @Arg("content") content: string) {
+        if (content.length >= 500)
+            throw new ApolloError("content must be shorter than or equal to 100 characters.", "FIELD_LENGTH_OVER");
+
+        return await CommentModel.findByIdAndUpdate(id,
+            { $set: { content: content } },
+            { new: true }
+        )
+    }
 }
