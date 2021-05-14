@@ -11,9 +11,4 @@ export interface IReport {
 }
 
 export interface IReportDocument extends Document, IReport { };
-
-export interface IReportModel extends Model<IReportDocument> {
-    findByTag: (tag: string) => Promise<Array<IReportDocument>>;
-    searchReports: (query: string) => Promise<Array<IReportDocument>>;
-    createReport: (data: IReportDocument) => Promise<IReportDocument>;
-};
+export interface IReportModel extends Model<IReportDocument> { };

@@ -1,9 +1,9 @@
 import { Field, ID, ObjectType } from "type-graphql";
 
+import { reportType } from "../report";
+
 import GraphQLTUser from "./User";
 import GraphQLTReportData from "./ReportData";
-
-import { reportType } from "../report";
 
 @ObjectType()
 class GraphQLTReport {
@@ -19,7 +19,7 @@ class GraphQLTReport {
     @Field(type => GraphQLTReportData)
     data;
 
-    @Field(type => reportType)
+    @Field()
     type: reportType;
 
     @Field()

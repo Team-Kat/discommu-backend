@@ -1,7 +1,5 @@
 import { Field, ID, ObjectType } from "type-graphql";
 
-import { announcementType } from "../announcement";
-
 @ObjectType()
 class GraphQLTAnnouncement {
     @Field(returns => ID)
@@ -13,8 +11,8 @@ class GraphQLTAnnouncement {
     @Field()
     content: string;
 
-    @Field(type => announcementType)
-    type: announcementType;
+    @Field()
+    type: number;
 
     @Field()
     timestamp: number;

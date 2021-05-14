@@ -6,6 +6,6 @@ import GraphQLTCategory from "./Category";
 
 const GraphQLTReportData = createUnionType({
     name: "GraphQLTReportData",
-    types: () => [GraphQLTCategory, GraphQLTPost, GraphQLTUser, String] as const
+    types: () => [GraphQLTCategory, GraphQLTPost, GraphQLTUser, String]
 })
 export default GraphQLTReportData;

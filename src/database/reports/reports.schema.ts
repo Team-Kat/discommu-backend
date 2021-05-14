@@ -1,6 +1,4 @@
 import { Schema } from "mongoose";
-
-import { report } from "./reports.statics";
 import { IReportDocument, IReportModel } from "./reports.types";
 
 import { reportType } from "../../types/report";
@@ -14,12 +12,10 @@ const Reportchema = new Schema<IReportDocument, IReportModel>({
     timestamp: Number,
     userID: String,
     type: {
-        type: String,
+        type: Number,
         enum: reportType,
         default: reportType.SUGGEST
     }
 });
-
-Reportchema.statics.report = report;
 
 export default Reportchema;
