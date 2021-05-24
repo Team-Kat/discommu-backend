@@ -6,7 +6,6 @@ import safeFetch from "../utils/fetch";
 
 import { categoryType, categorySort } from "../types/category";
 import { postSort } from "../types/post";
-import { reportSort } from "../types/report";
 import TContext from "../types/context";
 import GraphQLTUser from "../types/graphql/User";
 

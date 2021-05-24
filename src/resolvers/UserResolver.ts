@@ -1,13 +1,15 @@
 import { Ctx, FieldResolver, Resolver, Root, Mutation, Arg, Authorized } from "type-graphql";
 import { ApolloError } from "apollo-server-errors";
-import { UserModel, PostModel } from "../database";
+import { UserModel, PostModel, ReportModel } from "../database";
 
 import TUser from "../types/user";
 import TContext from "../types/context";
 import { postSort } from "../types/post";
+import { reportType } from "../types/report";
 
 import GraphQLTUser from "../types/graphql/User";
 import GraphQLTPost from "../types/graphql/Post";
+import GraphQLTReport from "../types/graphql/Report";
 
 import getElements from "../utils/getElements";
 
@@ -168,6 +170,33 @@ export default class {
         }).exec();
 
         return posts;
+    }
+
+    @Authorized(["ADMIN"])
+    @FieldResolver(returns => [GraphQLTReport])
+    async reports(
+        @Root() root: TUser,
+        @Ctx() ctx: TContext,
+        @Arg("query", { nullable: true }) query?: string,
+        @Arg("userID", { nullable: true, description: "The report's author's ID" }) userID?: string,
+        @Arg("limit", { nullable: true, description: "How many reports to divide" }) limit?: number,
+        @Arg("limitIndex", { defaultValue: 1, description: "Index of divided reports", nullable: true }) limitIndex?: number
+    ) {
+        if (limitIndex <= 0)
+            throw new ApolloError("limitIndex should be a natural number", "TYPE_ERROR");
+
+        let searchQuery = { data: root.discordID, type: reportType.USER };
+        if (query)
+            searchQuery["$text"] = { $search: query };
+        if (userID)
+            searchQuery["userID"] = userID;
+
+        let reports = await ReportModel.find(searchQuery, undefined, {
+            limit: limit ?? undefined,
+            skip: limit && limitIndex ? (limitIndex - 1) * limit : undefined
+        }).exec();
+
+        return reports;
     }
 
 

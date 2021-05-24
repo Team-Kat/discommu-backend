@@ -3,14 +3,16 @@ import { ApolloError } from "apollo-server-errors";
 
 import GraphQLTCategory from "../types/graphql/Category";
 import GraphQLTPost from "../types/graphql/Post";
+import GraphQLTReport from "../types/graphql/Report";
 
 import TContext from "../types/context";
 import { postSort } from "../types/post";
+import { reportType } from "../types/report";
 import { categoryType, TCategory } from "../types/category";
 
 import CreateCategory from "../inputs/CreateCategory";
 import EditCategory from "../inputs/EditCategory";
-import { CategoryModel, PostModel } from "../database";
+import { CategoryModel, PostModel, ReportModel } from "../database";
 
 @Resolver(GraphQLTCategory)
 export default class {
@@ -74,6 +76,34 @@ export default class {
 
         return posts;
     }
+
+    @Authorized(["ADMIN"])
+    @FieldResolver(returns => [GraphQLTReport])
+    async reports(
+        @Root() root: TCategory,
+        @Ctx() ctx: TContext,
+        @Arg("query", { nullable: true }) query?: string,
+        @Arg("userID", { nullable: true, description: "The report's author's ID" }) userID?: string,
+        @Arg("limit", { nullable: true, description: "How many reports to divide" }) limit?: number,
+        @Arg("limitIndex", { defaultValue: 1, description: "Index of divided reports", nullable: true }) limitIndex?: number
+    ) {
+        if (limitIndex <= 0)
+            throw new ApolloError("limitIndex should be a natural number", "TYPE_ERROR");
+
+        let searchQuery = { data: root.name, type: reportType.CATEGORY };
+        if (query)
+            searchQuery["$text"] = { $search: query };
+        if (userID)
+            searchQuery["userID"] = userID;
+
+        let reports = await ReportModel.find(searchQuery, undefined, {
+            limit: limit ?? undefined,
+            skip: limit && limitIndex ? (limitIndex - 1) * limit : undefined
+        }).exec();
+
+        return reports;
+    }
+
 
     @Subscription(() => GraphQLTCategory, {
         topics: "categoryAdded",
