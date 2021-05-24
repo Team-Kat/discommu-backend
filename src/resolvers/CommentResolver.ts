@@ -70,12 +70,12 @@ export default class {
         return await CommentModel.findByIdAndUpdate(id,
             { $set: { content: content } },
             { new: true }
-        )
+        );
     }
 
     @Authorized(["SELF_COMMENT"])
     @Mutation(returns => GraphQLTComment)
     async deleteComment(@Arg("id") id: string) {
-        return await CommentModel.findByIdAndDelete(id)
+        return await CommentModel.findByIdAndDelete(id);
     }
 }

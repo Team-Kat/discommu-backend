@@ -8,7 +8,7 @@ export interface IReport {
     timestamp: number;
     type: reportType;
     userID: string;
-}
+};
 
 export interface IReportDocument extends Document, IReport { };
 export interface IReportModel extends Model<IReportDocument> { };

@@ -6,7 +6,7 @@ export interface IAnnouncement {
     content: string;
     timestamp: number;
     type: announcementType;
-}
+};
 
 export interface IAnnouncementDocument extends Document, IAnnouncement { };
 export interface IAnnouncementModel extends Model<IAnnouncementDocument> { };

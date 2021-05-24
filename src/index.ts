@@ -56,17 +56,17 @@ process.on("exit", () => {
     const apollo = new ApolloServer({
         schema,
         logger,
+
         formatError: error => {
-            logger.error(`[${error.extensions?.code}] ${error.message}  (Path: ${error.path}, Original: ${error.originalError?.stack})`)
-            return error
+            logger.error(`[${error.extensions?.code}] ${error.message}  (Path: ${error.path}, Original: ${error.originalError?.stack})`);
+            return error;
         },
+
         context: async ({ req }): Promise<TContext> => {
             const uCache = new userCache();
-            let res = {
-                userCache: uCache,
-            }
+            let res = { userCache: uCache };
             if (!req)
-                return res
+                return res;
 
             let token = null;
             if (req.headers.authorization && req.headers.authorization.startsWith("Bearer "))
@@ -82,7 +82,7 @@ process.on("exit", () => {
                 ...res,
                 user: user || null,
                 url: req.protocol + "://" + req.get("host")
-            }
+            };
         }
     });
 

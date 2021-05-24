@@ -26,7 +26,7 @@ export default class DefaultResolver {
     loginURL() {
         return (
             `${config.discordAPIEndpoint}/oauth2/authorize?client_id=${config.oauth2.clientID}&redirect_uri=${config.oauth2.redirectURI}&scope=identify&response_type=code`
-        )
+        );
     }
 
     @Authorized()
@@ -75,7 +75,7 @@ export default class DefaultResolver {
         return {
             "name": name,
             ...badges[name]
-        }
+        };
     }
 
     @Query(returns => [GraphQLTBadge])
@@ -84,12 +84,12 @@ export default class DefaultResolver {
 
         for (const badge of Object.keys(badges)) {
             if (!badges[badge])
-                continue
+                continue;
 
             res.push({
                 "name": badge,
                 ...badges[badge]
-            })
+            });
         }
 
         return res;

@@ -8,5 +8,5 @@ type TUser = {
     following: string[],
     permissions: string[],
     badges: string[]
-}
+};
 export default TUser;

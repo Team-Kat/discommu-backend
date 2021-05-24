@@ -10,7 +10,7 @@ export interface IUser {
     permissions?: string[];
     following?: string[];
     badges?: string[];
-}
+};
 
 export interface IUserDocument extends Document, IUser {
     getUser: (this: IUserDocument, userCache: userCache) => Promise<TUser>;

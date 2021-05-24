@@ -1,8 +1,7 @@
 import { AuthChecker } from "type-graphql";
 
-import { CategoryModel, PostModel, CommentModel } from "../database";
-
 import TContext from "../types/context";
+import { CategoryModel, PostModel, CommentModel } from "../database";
 
 const DiscommuAuthChecker: AuthChecker<TContext> = async ({ context, args }, roles: string[]) => {
     if (!context.user)
@@ -40,7 +39,7 @@ const DiscommuAuthChecker: AuthChecker<TContext> = async ({ context, args }, rol
                     if (category?.authorID !== context.user.discordID)
                         res = false;
                     else
-                        res = true;
+                        res = res;
                 }
 
                 break;
@@ -49,14 +48,14 @@ const DiscommuAuthChecker: AuthChecker<TContext> = async ({ context, args }, rol
                 if (post?.authorID !== context.user.discordID)
                     res = false;
                 else
-                    res = true;
+                    res = res;
                 break;
             case "self_comment":
                 const comment = await CommentModel.findById(args.id);
                 if (comment?.authorID !== context.user.discordID)
                     res = false;
                 else
-                    res = true;
+                    res = res;
                 break;
         }
     }

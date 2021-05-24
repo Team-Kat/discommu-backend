@@ -174,9 +174,9 @@ export default class {
     async deleteCategory(@Ctx() ctx: TContext, @Arg("name") categoryName: string) {
         const posts = await PostModel.find({ category: categoryName });
         if (posts.length >= 10)
-            throw new ApolloError("Category has posts more than 10", "TOO_MANY_POSTS")
+            throw new ApolloError("Category has posts more than 10", "TOO_MANY_POSTS");
 
-        await posts.forEach(async post => await post.delete())
+        await posts.forEach(async post => await post.delete());
         return await CategoryModel.findOneAndDelete({ name: categoryName });
     }
 }

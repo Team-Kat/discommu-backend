@@ -2,7 +2,7 @@ export enum announcementType {
     POST = 0,
     CATEGORY = 1,
     ETC = 2
-}
+};
 
 export type TAnnouncement = {
     _id: string,
@@ -10,4 +10,4 @@ export type TAnnouncement = {
     content: string,
     timestamp: number,
     type: announcementType
-}
+};

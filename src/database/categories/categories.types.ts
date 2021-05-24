@@ -5,7 +5,7 @@ export interface ICategory {
     name: string;
     description: string;
     type: number;
-}
+};
 
 export interface ICategoryDocument extends Document, ICategory { };
 export interface ICategoryModel extends Model<ICategoryDocument> { };

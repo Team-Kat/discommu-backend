@@ -10,7 +10,7 @@ export interface IPost {
 
     tag?: string[];
     hearts?: string[];
-}
+};
 
 export interface IPostDocument extends Document, IPost { };
 export interface IPostModel extends Model<IPostDocument> { };

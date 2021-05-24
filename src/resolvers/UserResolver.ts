@@ -66,7 +66,7 @@ export default class {
             res.push({
                 "name": badge,
                 ...badgesInfo[badge]
-            })
+            });
         }
 
         return res;

@@ -6,5 +6,5 @@ type TComment = {
     reply: string,
     postID: string,
     hearts: string[],
-}
+};
 export default TComment;

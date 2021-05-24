@@ -1,9 +1,10 @@
-import { UserModel } from "../database";
-import config from "../../config.json";
 import safeFetch from "./fetch";
+import { UserModel } from "../database";
+
+import config from "../../config.json";
 
 export class cacheManager {
-    cache: { [key: string]: object } = {}
+    cache: { [key: string]: object } = {};
 
     get(key: string) {
         return this.cache[key] || null;
@@ -21,7 +22,7 @@ export class userCache extends cacheManager {
             avatarURL: string,
             discriminator: string
         }
-    }
+    } = {};
 
     async getDiscordUser(id: string) {
         if (this.get(id))
@@ -34,7 +35,8 @@ export class userCache extends cacheManager {
                     Authorization: `Bot ${config.botToken}`
                 }
             }
-        )
+        );
+
         if (res.status !== 200) return null;
         const json = await res.json();
         const data = {
@@ -62,6 +64,6 @@ export class userCache extends cacheManager {
             following: userDBInfo.following,
             badges: userDBInfo.badges,
             ...this.get(id)
-        }
+        };
     }
 }

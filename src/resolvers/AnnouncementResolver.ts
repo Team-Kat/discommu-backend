@@ -38,16 +38,15 @@ export default class {
     @Authorized(["ADMIN"])
     @Mutation(returns => GraphQLTAnnouncement)
     async createAnnouncement(@Arg("data") data: CreateAnnouncement) {
-        if (!Object.values(announcementType).includes(data.type)) {
+        if (!Object.values(announcementType).includes(data.type))
             throw new ApolloError("Type does not exists", "UNDEFINED_TYPE");
-        }
 
         const announcement = await AnnouncementModel.create({
             title: data.title,
             content: data.content,
             type: data.type,
             timestamp: Date.now()
-        })
+        });
         return announcement;
     }
 

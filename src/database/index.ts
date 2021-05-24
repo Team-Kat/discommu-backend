@@ -18,6 +18,7 @@ export const dbConnect = () => {
     });
 
     db = Mongoose.connection;
+
     db.once("open", async () => {
         logger.info("Database connect");
     });
@@ -28,6 +29,7 @@ export const dbConnect = () => {
 
 export const dbDisconnect = () => {
     if (!db) return;
+
     Mongoose.disconnect();
     logger.info("Database disconnect");
 }

@@ -79,7 +79,7 @@ export default class {
         const comments = await CommentModel.find({ postID: root._id }, undefined, {
             limit: limit ?? undefined,
             skip: limit && limitIndex ? (limitIndex - 1) * limit : undefined
-        }).exec()
+        }).exec();
         return comments;
     }
 

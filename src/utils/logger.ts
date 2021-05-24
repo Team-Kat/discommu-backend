@@ -1,7 +1,6 @@
 import { appendFile } from "fs";
 
 import timetoString from "./timetoString";
-
 import config from "../../config.json";
 
 
@@ -18,12 +17,12 @@ class Logger {
         MAGENTA: "\x1b[35m",
         CYAN: "\x1b[36m",
         WHITE: "\x1b[37m"
-    }
+    };
     levelNumber = {
         DEBUG: 1,
         WARNING: 2,
         INFO: 3,
-    }
+    };
 
     constructor(logFile: string) {
         this.logFile = logFile;

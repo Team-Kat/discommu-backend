@@ -10,11 +10,11 @@ export type TPost = {
     tag: string[],
     comments: string[],
     hearts: string[]
-}
+};
 
 export enum postSort {
     NEWEST = "newest",
     ALPHABETIC = "alphabetic",
     HEARTS = "hearts",
     VIEWS = "views"
-}
+};

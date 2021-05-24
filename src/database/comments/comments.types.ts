@@ -7,7 +7,7 @@ export interface IComment {
     reply: string;  // 답장 유저 ID
     postID: string;
     hearts: string[];
-}
+};
 
 export interface ICommentDocument extends Document, IComment { };
 export interface ICommentModel extends Model<ICommentDocument> { };

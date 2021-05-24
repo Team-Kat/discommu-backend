@@ -2,11 +2,11 @@ export enum reportType {
     POST = 0,
     CATEGORY = 1,
     USER = 2
-}
+};
 
 export enum reportSort {
     NEWEST = "newest"
-}
+};
 
 export type TReport = {
     _id: string,
@@ -15,4 +15,4 @@ export type TReport = {
     type: reportType,
     data: string,
     userID: string
-}
+};

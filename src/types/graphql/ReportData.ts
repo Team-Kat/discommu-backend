@@ -13,7 +13,7 @@ const GraphQLTReportData = createUnionType({
         else if ("discordID" in value)
             return GraphQLTUser;
         else if ("name" in value)
-            return GraphQLTCategory
+            return GraphQLTCategory;
     }
 })
 export default GraphQLTReportData;

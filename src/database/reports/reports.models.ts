@@ -1,6 +1,6 @@
 import { model } from "mongoose";
-import { IReportDocument, IReportModel } from "./reports.types";
 
 import ReportSchema from "./reports.schema";
+import { IReportDocument, IReportModel } from "./reports.types";
 
 export const ReportModel = model<IReportDocument, IReportModel>("report", ReportSchema);

@@ -39,6 +39,7 @@ export default class {
     @FieldResolver()
     async data(@Root() root: TReport, @Ctx() ctx: TContext) {
         let res;
+
         switch (root.type) {
             case reportType.USER:
                 res = await ctx.userCache.getUser(root.data);
@@ -85,7 +86,7 @@ export default class {
             data: data.data,
             userID: ctx.user.discordID,
             timestamp: Date.now()
-        })
+        });
         return report;
     }
 }

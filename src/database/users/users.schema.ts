@@ -8,7 +8,7 @@ const UserSchema = new Schema<IUserDocument, IUserModel>({
     discordID: String,
     description: {
         type: String,
-        default: ''
+        default: ""
     },
     point: {
         type: Number,

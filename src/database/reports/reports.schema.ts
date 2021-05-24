@@ -17,6 +17,6 @@ const Reportchema = new Schema<IReportDocument, IReportModel>({
         default: undefined
     }
 });
-Reportchema.index({ content: "text" })
+Reportchema.index({ content: "text" });
 
 export default Reportchema;
