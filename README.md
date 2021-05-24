@@ -19,3 +19,6 @@ You can get help in [Team Kat Discord](https://discord.gg/R5UG5mR)
 
 ## Contribute
 You can contribute by reporting a bug or adding a feature!
+
+## Developer
++ [kiki7000](https://github.com/kiki7000)
