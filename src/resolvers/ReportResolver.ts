@@ -58,7 +58,7 @@ export default class {
     @Mutation(returns => GraphQLTReport)
     async createReport(@Ctx() ctx: TContext, @Arg("data") data: CreateReport) {
         if (!Object.values(reportType).includes(data.type)) {
-            throw ApolloError("Type does not exists", "UNDEFINED_TYPE");
+            throw new ApolloError("Type does not exists", "UNDEFINED_TYPE");
         }
 
         switch (data.type) {

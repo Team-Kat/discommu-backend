@@ -1,9 +1,12 @@
-import { FieldResolver, Resolver, Root, Ctx, Mutation, Authorized, Arg, PubSub, PubSubEngine, Subscription } from "type-graphql";
+import { FieldResolver, Resolver, Root, Ctx, Mutation, Authorized, Arg } from "type-graphql";
 import { ApolloError } from "apollo-server-errors";
 
 import GraphQLTAnnouncement from "../types/graphql/Announcement";
 
-import { TAnnouncement } from "../types/announcement";
+import { TAnnouncement, announcementType } from "../types/announcement";
+
+import CreateAnnouncement from "../inputs/CreateAnnouncement";
+import { AnnouncementModel } from "../database";
 
 @Resolver(GraphQLTAnnouncement)
 export default class {
@@ -30,5 +33,21 @@ export default class {
     @FieldResolver()
     async timestamp(@Root() root: TAnnouncement) {
         return root.timestamp;
+    }
+
+    @Authorized(["ADMIN"])
+    @Mutation(returns => GraphQLTAnnouncement)
+    async createAnnouncement(@Arg("data") data: CreateAnnouncement) {
+        if (!Object.values(announcementType).includes(data.type)) {
+            throw new ApolloError("Type does not exists", "UNDEFINED_TYPE");
+        }
+
+        const announcement = await AnnouncementModel.create({
+            title: data.title,
+            content: data.content,
+            type: data.type,
+            timestamp: Date.now()
+        })
+        return announcement;
     }
 }

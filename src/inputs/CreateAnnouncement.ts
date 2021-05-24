@@ -16,5 +16,5 @@ export default class CreateAnnouncement {
     content: string;
 
     @Field({  description: "The announcement's type" })
-    type: NUMBER;
+    type: number;
 }
