@@ -22,6 +22,6 @@ const PostSchema = new Schema<IPostDocument, IPostModel>({
         default: []
     }
 });
-PostSchema.index({ title: 'text', content: 'text' });
+PostSchema.index({ title: "text", content: "text" });
 
 export default PostSchema;

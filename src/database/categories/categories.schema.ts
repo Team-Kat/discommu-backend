@@ -13,6 +13,6 @@ const CategorySchema = new Schema<ICategoryDocument, ICategoryModel>({
         default: 1
     }
 });
-CategorySchema.index({ name: 'text', description: 'text' });
+CategorySchema.index({ name: "text", description: "text" });
 
 export default CategorySchema;

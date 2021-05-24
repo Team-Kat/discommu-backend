@@ -87,7 +87,7 @@ process.on("exit", () => {
     });
 
     const app: Express.Application = Express();
-    app.use('/static', ExpressStatic('src/data'));
+    app.use("/static", ExpressStatic("src/data"));
     apollo.applyMiddleware({ app });
 
     const httpServer = createServer(app);

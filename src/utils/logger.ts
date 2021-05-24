@@ -34,7 +34,7 @@ class Logger {
     }
 
     formatLog(level: string, content: string, color?: string) {
-        return `${color ?? ''}[${level.toUpperCase()}]${color ? this.colorData.RESET : ''} ${content}`;
+        return `${color ?? ""}[${level.toUpperCase()}]${color ? this.colorData.RESET : ""} ${content}`;
     }
 
     async fileLog(level: string, content: string, callback?) {
@@ -49,19 +49,19 @@ class Logger {
     }
 
     async info(content: string) {
-        await this.log('info', content, this.colorData.GREEN);
+        await this.log("info", content, this.colorData.GREEN);
     }
 
     async error(content: string) {
-        await this.log('error', content, this.colorData.RED);
+        await this.log("error", content, this.colorData.RED);
     }
 
     async warn(content: string) {
-        await this.log('warn', content, this.colorData.YELLOW);
+        await this.log("warn", content, this.colorData.YELLOW);
     }
 
     async debug(content: string) {
-        await this.log('debug', content, this.colorData.BLUE);
+        await this.log("debug", content, this.colorData.BLUE);
     }
 }
 
