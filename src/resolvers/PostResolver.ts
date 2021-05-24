@@ -2,15 +2,17 @@ import { FieldResolver, Resolver, Root, Ctx, Subscription, Arg, Authorized, Muta
 import { ApolloError } from "apollo-server-errors";
 
 import GraphQLTPost from "../types/graphql/Post";
+import GraphQLTReport from "../types/graphql/Report";
 
 import getElements from "../utils/getElements";
 
 import TContext from "../types/context";
 import { TPost } from "../types/post";
+import { reportType } from "../types/report";
 
 import CreatePost from "../inputs/CreatePost";
 import EditPost from "../inputs/EditPost";
-import { CategoryModel, CommentModel, PostModel } from "../database";
+import { CategoryModel, CommentModel, PostModel, ReportModel } from "../database";
 
 @Resolver(GraphQLTPost)
 export default class {
@@ -79,6 +81,33 @@ export default class {
             skip: limit && limitIndex ? (limitIndex - 1) * limit : undefined
         }).exec()
         return comments;
+    }
+
+    @Authorized(["ADMIN"])
+    @FieldResolver(returns => [GraphQLTReport])
+    async reports(
+        @Root() root: TPost,
+        @Ctx() ctx: TContext,
+        @Arg("query", { nullable: true }) query?: string,
+        @Arg("userID", { nullable: true, description: "The report's author's ID" }) userID?: string,
+        @Arg("limit", { nullable: true, description: "How many reports to divide" }) limit?: number,
+        @Arg("limitIndex", { defaultValue: 1, description: "Index of divided reports", nullable: true }) limitIndex?: number
+    ) {
+        if (limitIndex <= 0)
+            throw new ApolloError("limitIndex should be a natural number", "TYPE_ERROR");
+
+        let searchQuery = { data: root._id, type: reportType.POST };
+        if (query)
+            searchQuery["$text"] = { $search: query };
+        if (userID)
+            searchQuery["userID"] = userID;
+
+        let reports = await ReportModel.find(searchQuery, undefined, {
+            limit: limit ?? undefined,
+            skip: limit && limitIndex ? (limitIndex - 1) * limit : undefined
+        }).exec();
+
+        return reports;
     }
 
     @Subscription(() => GraphQLTPost, {
