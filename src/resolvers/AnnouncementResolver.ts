@@ -1,4 +1,4 @@
-import { FieldResolver, Resolver, Root, Ctx, Mutation, Authorized, Arg } from "type-graphql";
+import { FieldResolver, Resolver, Root, Mutation, Authorized, Arg } from "type-graphql";
 import { ApolloError } from "apollo-server-errors";
 
 import GraphQLTAnnouncement from "../types/graphql/Announcement";
@@ -49,5 +49,17 @@ export default class {
             timestamp: Date.now()
         })
         return announcement;
+    }
+
+    @Authorized(["ADMIN"])
+    @Mutation(returns => GraphQLTAnnouncement)
+    async editAnnouncement(@Arg("id") id: string, @Arg("content") content: string) {
+        if (!await AnnouncementModel.exists({ _id: id }))
+            throw new ApolloError(`Announcement with id ${id} doesn't exists`, "UNKNOWN_ID");
+
+        return await AnnouncementModel.findByIdAndUpdate(id,
+            { $set: { content: content } },
+            { new: true }
+        );
     }
 }
