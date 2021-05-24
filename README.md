@@ -5,19 +5,17 @@
 ![Azure Deploy](https://github.com/Team-Kat/discommu-backend/actions/workflows/deploy.yml/badge.svg)
 
 ## Use
-1. Create config.json and fill the blanks
+ 1. Create config.json and fill the blanks
 
 ### Using docker
-2. type `docker-compose up`
+ 2. type `docker-compose up`
 
 ### Using yarn
-2. type `yarn`
-3. type `yarn start`
-
+ 2. type `yarn`
+ 3. type `yarn start`
 
 ## Help
 You can get help in [Team Kat Discord](https://discord.gg/R5UG5mR)
-
 
 ## Contribute
 You can contribute by reporting a bug or adding a feature!
