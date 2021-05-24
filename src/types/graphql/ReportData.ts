@@ -6,6 +6,14 @@ import GraphQLTCategory from "./Category";
 
 const GraphQLTReportData = createUnionType({
     name: "GraphQLTReportData",
-    types: () => [GraphQLTCategory, GraphQLTPost, GraphQLTUser, String]
+    types: () => [GraphQLTCategory, GraphQLTPost, GraphQLTUser],
+    resolveType: value => {
+        if ("title" in value)
+            return GraphQLTPost;
+        else if ("discordID" in value)
+            return GraphQLTUser;
+        else if ("name" in value)
+            return GraphQLTCategory
+    }
 })
 export default GraphQLTReportData;

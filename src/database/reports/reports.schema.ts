@@ -14,7 +14,7 @@ const Reportchema = new Schema<IReportDocument, IReportModel>({
     type: {
         type: Number,
         enum: reportType,
-        default: reportType.SUGGEST
+        default: undefined
     }
 });
 

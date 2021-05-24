@@ -49,9 +49,6 @@ export default class {
             case reportType.POST:
                 res = await PostModel.findById(root.data);
                 break;
-            case reportType.SUGGEST:
-                res = root.data;
-                break;
         }
 
         return res;
@@ -60,9 +57,7 @@ export default class {
     @Authorized()
     @Mutation(returns => GraphQLTReport)
     async createReport(@Ctx() ctx: TContext, @Arg("data") data: CreateReport) {
-        switch (data.type ?? reportType.SUGGEST) {
-            case reportType.SUGGEST:
-                break;
+        switch (data.type) {
             case reportType.CATEGORY:
                 if (!(await CategoryModel.exists({ name: data.data })))
                     throw new ApolloError("Category does not exists", "REPORT_DATA_NOT_EXISTS");
@@ -82,7 +77,7 @@ export default class {
 
         const report = await ReportModel.create({
             content: data.content,
-            type: data.type ?? reportType.SUGGEST,
+            type: data.type,
             data: data.data,
             userID: ctx.user.discordID,
             timestamp: Date.now()
