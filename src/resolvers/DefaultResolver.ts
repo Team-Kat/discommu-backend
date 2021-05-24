@@ -9,13 +9,14 @@ import { postSort } from "../types/post";
 import TContext from "../types/context";
 import GraphQLTUser from "../types/graphql/User";
 
-import { UserModel, CategoryModel, PostModel } from "../database";
+import { UserModel, CategoryModel, PostModel, ReportModel } from "../database";
 
 import config from "../../config.json";
 import badges from "../data/json/badges.json";
 import GraphQLTBadge from "../types/graphql/Badge";
 import GraphQLTCategory from "../types/graphql/Category";
 import GraphQLTPost from "../types/graphql/Post";
+import GraphQLTReport from "../types/graphql/Report";
 
 @Resolver()
 export default class DefaultResolver {
@@ -200,6 +201,16 @@ export default class DefaultResolver {
         }).exec();
 
         return posts;
+    }
+
+    @Authorized(["ADMIN"])
+    @Query(returns => GraphQLTReport, { nullable: true })
+    async report(@Arg("id") id: string) {
+        const res = await ReportModel.findById(id);
+        if (!res)
+            return null;
+
+        return res;
     }
 
     @Mutation(returns => String, { nullable: true })

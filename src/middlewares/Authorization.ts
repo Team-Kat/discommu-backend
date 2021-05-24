@@ -16,24 +16,24 @@ const DiscommuAuthChecker: AuthChecker<TContext> = async ({ context, args }, rol
 
     let res = true;
     for (const role of roles) {
-        switch (role) {
-            case "ADMIN":
+        switch (role.toLowerCase()) {
+            case "admin":
                 res = false;
                 break;
-            case "USER_EDIT":
+            case "user_edit":
                 if (args.id && (args.id === context.user.discordID))
                     res = res;
                 else
                     res = false;
                 break;
-            case "MODIFY_CATEGORIES":
-                if (context.user.permissions.includes("MODIFY_CATEGORIES"))
+            case "modify_categories":
+                if (context.user.permissions.includes("modify_categories"))
                     res = res;
                 else
                     res = false;
                 break;
-            case "SELF_CATEGORY":
-                if (!context.user.permissions.includes("MODIFY_CATEGORIES"))
+            case "self_category":
+                if (!context.user.permissions.includes("modify_categories"))
                     res = false;
                 else {
                     const category = await CategoryModel.findOne({ name: args.name });
@@ -44,14 +44,14 @@ const DiscommuAuthChecker: AuthChecker<TContext> = async ({ context, args }, rol
                 }
 
                 break;
-            case "SELF_POST":
+            case "self_post":
                 const post = await PostModel.findById(args.id);
                 if (post?.authorID !== context.user.discordID)
                     res = false;
                 else
                     res = true;
                 break;
-            case "SELF_COMMENT":
+            case "self_comment":
                 const comment = await CommentModel.findById(args.id);
                 if (comment?.authorID !== context.user.discordID)
                     res = false;
