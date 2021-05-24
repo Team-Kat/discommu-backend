@@ -6,6 +6,7 @@ import safeFetch from "../utils/fetch";
 
 import { categoryType, categorySort } from "../types/category";
 import { postSort } from "../types/post";
+import { reportSort } from "../types/report";
 import TContext from "../types/context";
 import GraphQLTUser from "../types/graphql/User";
 
@@ -211,6 +212,37 @@ export default class DefaultResolver {
             return null;
 
         return res;
+    }
+
+    @Authorized(["ADMIN"])
+    @Query(returns => [GraphQLTReport])
+    async reports(
+        @Arg("query", { nullable: true }) query?: string,
+        @Arg("userID", { nullable: true, description: "The report's author's ID" }) userID?: string,
+        @Arg("data", { nullable: true, description: "The report's data" }) data?: string,
+        @Arg("type", { nullable: true, description: "The report's type" }) type?: number,
+        @Arg("limit", { nullable: true, description: "How many reports to divide" }) limit?: number,
+        @Arg("limitIndex", { defaultValue: 1, description: "Index of divided reports", nullable: true }) limitIndex?: number
+    ) {
+        if (limitIndex <= 0)
+            throw new ApolloError("limitIndex should be a natural number", "TYPE_ERROR");
+
+        let searchQuery = {};
+        if (query)
+            searchQuery["$text"] = { $search: query };
+        if (userID)
+            searchQuery["userID"] = userID;
+        if (data)
+            searchQuery["data"] = data;
+        if (type >= 0)
+            searchQuery["type"] = type;
+
+        let reports = await ReportModel.find(searchQuery, undefined, {
+            limit: limit ?? undefined,
+            skip: limit && limitIndex ? (limitIndex - 1) * limit : undefined
+        }).exec();
+
+        return reports;
     }
 
     @Mutation(returns => String, { nullable: true })

@@ -4,6 +4,10 @@ export enum reportType {
     USER = 2
 }
 
+export enum reportSort {
+    NEWEST = "newest"
+}
+
 export type TReport = {
     _id: string,
     content: string,
