@@ -1,71 +1,217 @@
-import { FieldResolver, Resolver, Root } from "type-graphql";
+import { FieldResolver, Resolver, Root, Ctx, Subscription, Arg, Authorized, Mutation, PubSub, PubSubEngine } from "type-graphql";
+import { ApolloError } from "apollo-server-errors";
 
-import { Post } from "../types/Post";
-import { User } from "../types/User";
+import GraphQLTPost from "../types/graphql/Post";
+import GraphQLTReport from "../types/graphql/Report";
 
-import { CommentModel } from "../database";
-import { getUser } from "../util";
+import getElements from "../utils/getElements";
 
-@Resolver(Post)
+import TContext from "../types/context";
+import { TPost } from "../types/post";
+import { reportType } from "../types/report";
+
+import CreatePost from "../inputs/CreatePost";
+import EditPost from "../inputs/EditPost";
+import { CategoryModel, CommentModel, PostModel, ReportModel } from "../database";
+
+@Resolver(GraphQLTPost)
 export default class {
     @FieldResolver()
-    async _id(@Root() parent: Post) {
-        return parent._id;
-    }
-
-    @FieldResolver(returns => User)
-    async author(@Root() parent: Post) {
-        const res = await getUser(parent.authorID)
-        if (!res) return null;
-
-        return {
-            id: res.id,
-            discriminator: res.discriminator,
-            username: res.username,
-            avatarURL: res.avatarURL,
-            permissions: res.userInfo.permissions,
-            following: res.userInfo.following
-        };
+    async id(@Root() root: TPost) {
+        return root._id;
     }
 
     @FieldResolver()
-    async title(@Root() parent: Post) {
-        return parent.title;
+    async title(@Root() root: TPost) {
+        return root.title;
     }
 
     @FieldResolver()
-    async content(@Root() parent: Post) {
-        return parent.content;
+    async content(@Root() root: TPost) {
+        return root.content;
     }
 
     @FieldResolver()
-    async category(@Root() parent: Post) {
-        return parent.category;
+    async timestamp(@Root() root: TPost) {
+        return root.timestamp;
     }
 
     @FieldResolver()
-    async tag(@Root() parent: Post) {
-        return parent.tag;
+    async views(@Root() root: TPost) {
+        return root.views;
     }
 
     @FieldResolver()
-    async timestamp(@Root() parent: Post) {
-        return parent.timestamp;
+    async tag(@Root() root: TPost) {
+        return root.tag;
     }
 
     @FieldResolver()
-    async views(@Root() parent: Post) {
-        return parent.views;
+    async author(@Root() root: TPost, @Ctx() ctx: TContext) {
+        return await ctx.userCache.getUser(root.authorID);
     }
 
     @FieldResolver()
-    async hearts(@Root() parent: Post) {
-        return parent.hearts;
+    async category(@Root() root: TPost) {
+        return await CategoryModel.findOne({ name: root.category });
     }
 
     @FieldResolver()
-    async comments(@Root() parent: Post) {
-        return (await CommentModel.findByPost(parent._id))
-            .map(i => i._doc);
+    async hearts(@Root() root: TPost, @Ctx() ctx: TContext) {
+        let res = [];
+        for (const userID of root.hearts) {
+            const user = await ctx.userCache.getUser(userID);
+            if (user)
+                res.push(user);
+        }
+        return res;
+    }
+
+    @FieldResolver()
+    async comments(
+        @Root() root: TPost,
+        @Arg("limit", { nullable: true, description: "How many comments to divide" }) limit?: number,
+        @Arg("limitIndex", { defaultValue: 1, description: "Index of divided comments", nullable: true }) limitIndex?: number
+    ) {
+        if (limitIndex <= 0)
+            throw new ApolloError("limitIndex should be a natural number", "TYPE_ERROR");
+
+        const comments = await CommentModel.find({ postID: root._id }, undefined, {
+            limit: limit ?? undefined,
+            skip: limit && limitIndex ? (limitIndex - 1) * limit : undefined
+        }).exec();
+        return comments;
+    }
+
+    @Authorized(["ADMIN"])
+    @FieldResolver(returns => [GraphQLTReport])
+    async reports(
+        @Root() root: TPost,
+        @Ctx() ctx: TContext,
+        @Arg("query", { nullable: true }) query?: string,
+        @Arg("userID", { nullable: true, description: "The report's author's ID" }) userID?: string,
+        @Arg("limit", { nullable: true, description: "How many reports to divide" }) limit?: number,
+        @Arg("limitIndex", { defaultValue: 1, description: "Index of divided reports", nullable: true }) limitIndex?: number
+    ) {
+        if (limitIndex <= 0)
+            throw new ApolloError("limitIndex should be a natural number", "TYPE_ERROR");
+
+        let searchQuery = { data: root._id, type: reportType.POST };
+        if (query)
+            searchQuery["$text"] = { $search: query };
+        if (userID)
+            searchQuery["userID"] = userID;
+
+        let reports = await ReportModel.find(searchQuery, undefined, {
+            limit: limit ?? undefined,
+            skip: limit && limitIndex ? (limitIndex - 1) * limit : undefined
+        }).exec();
+
+        return reports;
+    }
+
+    @Subscription(() => GraphQLTPost, {
+        topics: "postAdded",
+        filter: ({ payload, args }) =>
+            (args.authorID ? payload.authorID == args.authorID : true)
+            && (args.tag ? args.tag.every(r => payload.tag.includes(r)) : true)
+            && (args.query ? (payload.title + payload.content).includes(args.query) : true)
+    })
+    async postAdded(
+        @Root() post: TPost,
+        @Arg("query", { nullable: true }) query?: string,
+        @Arg("authorID", { nullable: true, description: "The post's author's ID" }) authorID?: string,
+        @Arg("tag", type => [String], { nullable: true, description: "The post's tag" }) tag?: string[]
+    ) {
+        return post;
+    }
+
+    @Authorized()
+    @Mutation(returns => GraphQLTPost)
+    async createPost(@PubSub() pubsub: PubSubEngine, @Ctx() ctx: TContext, @Arg("data") data: CreatePost) {
+        if (!(await CategoryModel.exists({ name: data.category })))
+            throw new ApolloError(`There is no category named ${data.category}`, "CATEGORY_DOES_NOT_EXISTS");
+
+        const post = await PostModel.create({ title: data.title, content: data.content, tag: data.tag, authorID: ctx.user.discordID, timestamp: Date.now(), category: data.category });
+        await pubsub.publish("postAdded", post);
+        return post;
+    }
+
+    @Authorized(["SELF_POST"])
+    @Mutation(returns => GraphQLTPost)
+    async editPostTitle(@Arg("id") id: string, @Arg("title") title: string) {
+        if (title.length >= 100)
+            throw new ApolloError("title must be shorter than or equal to 100 characters.", "FIELD_LENGTH_OVER");
+
+        return await PostModel.findByIdAndUpdate(id,
+            { $set: { title: title } },
+            { new: true }
+        );
+    }
+
+    @Authorized(["SELF_POST"])
+    @Mutation(returns => GraphQLTPost)
+    async editPostContent(@Arg("id") id: string, @Arg("content") content: string) {
+        return await PostModel.findByIdAndUpdate(id,
+            { $set: { content: content } },
+            { new: true }
+        );
+    }
+
+    @Authorized(["SELF_POST"])
+    @Mutation(returns => GraphQLTPost)
+    async editPostTag(@Arg("id") id: string, @Arg("tag", type => [String]) tag: string[]) {
+        const post = await PostModel.findById(id);
+        return await PostModel.findByIdAndUpdate(id,
+            { $set: { tag: getElements(post.tag, tag) } },
+            { new: true }
+        );
+    }
+
+    @Authorized(["SELF_POST"])
+    @Mutation(returns => GraphQLTPost, { nullable: true })
+    async editPost(@Arg("id") id: string, @Arg("data") data: EditPost) {
+        if (data.title)
+            await this.editPostTitle(id, data.title);
+
+        if (data.content)
+            await this.editPostContent(id, data.content);
+
+        if (data.tag)
+            await this.editPostTag(id, data.tag);
+
+        return await PostModel.findById(id);
+    }
+
+    @Authorized(["SELF_POST"])
+    @Mutation(returns => GraphQLTPost, { nullable: true })
+    async deletePost(@Arg("id") id: string) {
+        return await PostModel.findByIdAndDelete(id);
+    }
+
+    @Authorized()
+    @Mutation(returns => GraphQLTPost, { nullable: true })
+    async addHeart(@Ctx() ctx: TContext, @Arg("id") id: string) {
+        const post = await PostModel.findById(id);
+        if (!post)
+            return null;
+
+        if (post.hearts.includes(ctx.user.discordID))
+            return null;
+
+        return await PostModel.findByIdAndUpdate(id, { $push: { hearts: ctx.user.discordID } }, { new: true });
+    }
+
+    @Authorized()
+    @Mutation(returns => GraphQLTPost, { nullable: true })
+    async removeHeart(@Ctx() ctx: TContext, @Arg("id") id: string) {
+        const post = await PostModel.findById(id);
+        if (!post)
+            return null;
+
+        if (!post.hearts.includes(ctx.user.discordID))
+            return null;
+
+        return await PostModel.findByIdAndUpdate(id, { $pull: { hearts: ctx.user.discordID } }, { new: true });
     }
 }

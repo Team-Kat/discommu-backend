@@ -6,5 +6,5 @@ export async function findOneOrCreate(
 ): Promise<IUserDocument> {
     const record = await this.findOne(data);
     if (record) return record;
-    else return this.create(data);
+    else return await this.create(data);
 }

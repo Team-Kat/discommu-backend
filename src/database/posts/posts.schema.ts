@@ -1,7 +1,4 @@
 import { Schema } from "mongoose";
-
-import { findByTag, searchPosts } from "./posts.statics";
-import { addHeart, removeHeart } from "./posts.methods";
 import { IPostDocument, IPostModel } from "./posts.types";
 
 const PostSchema = new Schema<IPostDocument, IPostModel>({
@@ -10,7 +7,11 @@ const PostSchema = new Schema<IPostDocument, IPostModel>({
     content: String,
     category: String,
     timestamp: Number,
-    views: Number,
+
+    views: {
+        type: Number,
+        default: 0
+    },
 
     tag: {
         type: Array,
@@ -21,12 +22,6 @@ const PostSchema = new Schema<IPostDocument, IPostModel>({
         default: []
     }
 });
-PostSchema.index({ title: 'text', content: 'text'})
-
-PostSchema.statics.findByTag = findByTag;
-PostSchema.statics.searchPosts = searchPosts;
-
-PostSchema.methods.addHeart = addHeart;
-PostSchema.methods.removeHeart = removeHeart;
+PostSchema.index({ title: "text", content: "text" });
 
 export default PostSchema;

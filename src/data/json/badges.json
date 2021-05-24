@@ -1,0 +1,40 @@
+{
+    "developer": {
+        "icon": "images/developer.png",
+        "permissions": [
+            "ADD_CATEGORY",
+            "REMOVE_CATEGORY",
+            "REMOVE_POST",
+            "REMOVE_COMMENT",
+            "BAN_USER",
+            "WATCH_STATS",
+            "MODIFY_BADGE",
+            "MODIFY_POINTS",
+            "VERIFY",
+            "UNVERIFY"
+        ]
+    },
+    "admin": {
+        "icon": "images/administer.png",
+        "permissions": [
+            "ADD_CATEGORY",
+            "REMOVE_CATEGORY",
+            "REMOVE_POST",
+            "REMOVE_COMMENT",
+            "BAN_USER",
+            "WATCH_STATS",
+            "MODIFY_BADGE",
+            "MODIFY_POINTS",
+            "VERIFY",
+            "UNVERIFY"
+        ]
+    },
+    "cleaner": {
+        "icon": "images/cleaner.png",
+        "permissions": [
+            "REMOVE_POST",
+            "REMOVE_COMMENT",
+            "BAN_USER"
+        ]
+    }
+}

@@ -6,18 +6,11 @@ export interface IPost {
     content: string;
     category: string;
     timestamp: number;
-    views: number;
+    views?: number;
 
     tag?: string[];
     hearts?: string[];
-}
-
-export interface IPostDocument extends Document, IPost {
-    addHeart: (this: IPostDocument, userID: string) => Promise<void>;
-    removeHeart: (this: IPostDocument, userID: string) => Promise<void>;
 };
 
-export interface IPostModel extends Model<IPostDocument> {
-    findByTag: (tag: string) => Promise<Array<IPostDocument>>;
-    searchPosts: (query: string) => Promise<Array<IPostDocument>>;
-};
+export interface IPostDocument extends Document, IPost { };
+export interface IPostModel extends Model<IPostDocument> { };

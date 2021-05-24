@@ -1,35 +1,42 @@
 import Mongoose from "mongoose";
 
 import config from "../../config.json";
+import logger from "../utils/logger";
 
-export { CategoryModel } from "./categories/categories.models";
-export { PostModel } from "./posts/posts.models";
-export { UserModel } from "./users/users.models";
-export { CommentModel } from "./comments/comments.models";
 
 export let db: Mongoose.Connection;
 
-export const connect = () => {
-    if (db) disconnect();
+
+export const dbConnect = () => {
+    if (db) dbDisconnect();
 
     Mongoose.connect(`mongodb+srv://admin:${config.db.password}@${config.db.url}/discommu?retryWrites=true&w=majority`, {
         useNewUrlParser: true,
-        useFindAndModify: true,
+        useFindAndModify: false,
         useUnifiedTopology: true,
         useCreateIndex: true
     });
 
     db = Mongoose.connection;
+
     db.once("open", async () => {
-        console.log("LOG> Database Ready");
+        logger.info("Database connect");
     });
     db.on("error", () => {
-        console.log("LOG> Database Connection error");
+        logger.error("Error while connecting");
     });
 }
 
-export const disconnect = () => {
+export const dbDisconnect = () => {
     if (!db) return;
+
     Mongoose.disconnect();
-    console.log("LOG> Database Disconnect");
+    logger.info("Database disconnect");
 }
+
+export { UserModel } from "./users/users.models";
+export { PostModel } from "./posts/posts.models";
+export { CategoryModel } from "./categories/categories.models";
+export { CommentModel } from "./comments/comments.models";
+export { AnnouncementModel } from "./announcements/announcements.models";
+export { ReportModel } from "./reports/reports.models";

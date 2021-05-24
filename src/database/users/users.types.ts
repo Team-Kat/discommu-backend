@@ -1,17 +1,19 @@
 import { Document, Model } from "mongoose";
 
+import TUser from "../../types/user";
+import { userCache } from "../../utils/cache";
+
 export interface IUser {
     discordID: string;
+    description?: string;
     point?: number;
     permissions?: string[];
     following?: string[];
-}
+    badges?: string[];
+};
 
 export interface IUserDocument extends Document, IUser {
-    addFollowing: (this: IUserDocument, userID: string) => Promise<void>;
-    removeFollowing: (this: IUserDocument, userID: string) => Promise<void>;
-    addPermissions: (this: IUserDocument, permission: string) => Promise<void>;
-    removePermissions: (this: IUserDocument, permission: string) => Promise<void>;
+    getUser: (this: IUserDocument, userCache: userCache) => Promise<TUser>;
 };
 
 export interface IUserModel extends Model<IUserDocument> {

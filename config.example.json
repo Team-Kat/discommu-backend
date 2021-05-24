@@ -3,16 +3,13 @@
     "discordAPIEndpoint": "https://discord.com/api/v8",
     "jwtSecret": "",
     "botToken": "",
-    "imgbbapitoken": "",
-
-    "permissions": ["admin"],
-
+    "logFile": "discommu-backend.log",
+    "staticDir": "static",
     "oauth2": {
         "clientID": "",
         "clientSecret": "",
         "redirectURI": "http://localhost:8080/callback/auth"
     },
-
     "db": {
         "password": "",
         "url": ""

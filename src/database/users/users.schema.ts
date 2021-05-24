@@ -1,11 +1,15 @@
 import { Schema } from "mongoose";
 
 import { findOneOrCreate } from "./users.statics";
-import { addFollowing, removeFollowing, addPermissions, removePermissions } from "./users.methods";
+import { getUser } from "./users.methods";
 import { IUserDocument, IUserModel } from "./users.types";
 
 const UserSchema = new Schema<IUserDocument, IUserModel>({
     discordID: String,
+    description: {
+        type: String,
+        default: ""
+    },
     point: {
         type: Number,
         default: 0
@@ -17,14 +21,14 @@ const UserSchema = new Schema<IUserDocument, IUserModel>({
     following: {
         type: Array,
         default: []
+    },
+    badges: {
+        type: Array,
+        default: []
     }
 });
 
 UserSchema.statics.findOneOrCreate = findOneOrCreate;
-
-UserSchema.methods.addFollowing = addFollowing;
-UserSchema.methods.removeFollowing = removeFollowing;
-UserSchema.methods.addPermissions = addPermissions;
-UserSchema.methods.removePermissions = removePermissions;
+UserSchema.methods.getUser = getUser;
 
 export default UserSchema;

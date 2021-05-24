@@ -5,13 +5,9 @@ export interface IComment {
     content: string;
     timestamp: number;
     reply: string;  // 답장 유저 ID
-    postID: string;  // Post의 _id
-}
-
-export interface ICommentDocument extends Document, IComment {
-    editContent: (this: ICommentDocument, content: string) => Promise<void>;
+    postID: string;
+    hearts: string[];
 };
 
-export interface ICommentModel extends Model<ICommentDocument> {
-    findByPost: (postID: string) => Promise<Array<any>>;
-};
+export interface ICommentDocument extends Document, IComment { };
+export interface ICommentModel extends Model<ICommentDocument> { };
