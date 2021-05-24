@@ -14,5 +14,6 @@ const AnnouncementSchema = new Schema<IAnnouncementDocument, IAnnouncementModel>
         default: announcementType.ETC
     }
 });
+AnnouncementSchema.index({ title: "text", content: "text" });
 
 export default AnnouncementSchema;

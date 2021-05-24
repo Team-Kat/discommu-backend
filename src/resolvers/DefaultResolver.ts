@@ -7,16 +7,18 @@ import safeFetch from "../utils/fetch";
 import { categoryType, categorySort } from "../types/category";
 import { postSort } from "../types/post";
 import TContext from "../types/context";
-import GraphQLTUser from "../types/graphql/User";
 
-import { UserModel, CategoryModel, PostModel, ReportModel } from "../database";
+import { UserModel, CategoryModel, PostModel, ReportModel, AnnouncementModel } from "../database";
 
 import config from "../../config.json";
 import badges from "../data/json/badges.json";
+
+import GraphQLTUser from "../types/graphql/User";
 import GraphQLTBadge from "../types/graphql/Badge";
 import GraphQLTCategory from "../types/graphql/Category";
 import GraphQLTPost from "../types/graphql/Post";
 import GraphQLTReport from "../types/graphql/Report";
+import GraphQLTAnnouncement from "../types/graphql/Announcement";
 
 @Resolver()
 export default class DefaultResolver {
@@ -242,6 +244,39 @@ export default class DefaultResolver {
         }).exec();
 
         return reports;
+    }
+
+    @Query(returns => GraphQLTAnnouncement, { nullable: true })
+    async announcement(@Arg("id") id: string) {
+        const res = await AnnouncementModel.findById(id);
+        if (!res)
+            return null;
+
+        return res;
+    }
+
+    @Query(returns => [GraphQLTAnnouncement])
+    async announcements(
+        @Arg("query", { nullable: true }) query?: string,
+        @Arg("type", { nullable: true, description: "The announcement's type" }) type?: number,
+        @Arg("limit", { nullable: true, description: "How many announcements to divide" }) limit?: number,
+        @Arg("limitIndex", { defaultValue: 1, description: "Index of divided announcements", nullable: true }) limitIndex?: number
+    ) {
+        if (limitIndex <= 0)
+            throw new ApolloError("limitIndex should be a natural number", "TYPE_ERROR");
+
+        let searchQuery = {};
+        if (query)
+            searchQuery["$text"] = { $search: query };
+        if (type >= 0)
+            searchQuery["type"] = type;
+
+        let announcement = await AnnouncementModel.find(searchQuery, undefined, {
+            limit: limit ?? undefined,
+            skip: limit && limitIndex ? (limitIndex - 1) * limit : undefined
+        }).exec();
+
+        return announcement;
     }
 
     @Mutation(returns => String, { nullable: true })
