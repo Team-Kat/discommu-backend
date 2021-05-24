@@ -54,12 +54,21 @@ export default class {
     @Authorized(["ADMIN"])
     @Mutation(returns => GraphQLTAnnouncement)
     async editAnnouncement(@Arg("id") id: string, @Arg("content") content: string) {
-        if (!await AnnouncementModel.exists({ _id: id }))
+        if (!(await AnnouncementModel.exists({ _id: id })))
             throw new ApolloError(`Announcement with id ${id} doesn't exists`, "UNKNOWN_ID");
 
         return await AnnouncementModel.findByIdAndUpdate(id,
             { $set: { content: content } },
             { new: true }
         );
+    }
+
+    @Authorized(["ADMIN"])
+    @Mutation(returns => GraphQLTAnnouncement)
+    async deleteAnnouncement(@Arg("id") id: string) {
+        if (!(await AnnouncementModel.exists({ _id: id })))
+            throw new ApolloError(`Announcement with id ${id} doesn't exists`, "UNKNOWN_ID");
+
+        return await AnnouncementModel.findByIdAndDelete(id);
     }
 }
