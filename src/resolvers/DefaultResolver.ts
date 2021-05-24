@@ -44,6 +44,7 @@ export default class DefaultResolver {
         return user;
     }
 
+    @Authorized(["ADMIN"])
     @Query(returns => [GraphQLTUser])
     async users(
         @Ctx() ctx: TContext,
